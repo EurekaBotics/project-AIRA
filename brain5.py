@@ -1,22 +1,22 @@
 import os
 import re
 import openai
-import subprocess
 import pyttsx3
-import json
 from txt2speech import STT
 import cv2
 import mediapipe as mp
 import threading
-from serial import Serial
+# from serial import Serial
+print('ello')
 Thread = threading.Thread
 
-ard = Serial("COM4", 9600) 
+
+# ard = Serial("COM4", 9600) 
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
-
-openai.api_key = os.environ['API_KEY']
+print("hello")
+openai.api_key = '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'
 initial_messages=[
     {
       "role": "system",
@@ -79,7 +79,7 @@ initial_messages=[
       "content": "*emotion(love())* Aw, that's so nice of you to say! I'm here to bring happiness and help to your life. Remember, you're amazing and loved by many!"
     }
   ]
-
+print('ello')
 cx = 0
 prevcx = 0
 def eyes():
@@ -120,7 +120,7 @@ def eyes():
                             angle = ((cx - 0)*((180-0)/(1080-0)) + 0) - 90
                             # print(angle)
                             command = str(angle)
-                            ard.write(command.encode())
+                            # ard.write(command.encode())
                             # print(cx, prevcx, abs(cx-prevcx))
                         prevcx = cx
                             
@@ -226,15 +226,15 @@ def chat(msg:str):
 
 def hi(msg:str):
     print(f"wave: {msg}")
-    ard.write(b'200')
+    # ard.write(b'200')
 
 def wave(msg:str):
     print(f"wave: {msg}")
-    ard.write(b'201')
+    # ard.write(b'201')
 
 def salute(msg:str):
     print(f"wave: {msg}")
-    ard.write(b'202')
+    # ard.write(b'202')
 
 def vqa(msg:str):
     print(f"vqa: {msg}")
@@ -254,14 +254,14 @@ def place(obj:str):
 
 def happy():
     print("happy")
-    ard.write(b'500')
+    # ard.write(b'500')
 
 def angry():
     print("angry")
-    ard.write(b'600')
+    # ard.write(b'600')
 def sad():
     print("sad")
-    ard.write(b'700')
+    # ard.write(b'700')
 
 def neutral():
     print("neutral")
@@ -279,7 +279,7 @@ if __name__ ==  "__main__":
     while True:
 
         try:
-
+            print("hello")
             voice = whisp.listen()
             msg = whisp.transcribe(voice)
             # msg = input(">>>")
