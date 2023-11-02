@@ -7,6 +7,9 @@ model = AutoModel.from_pretrained("suno/bark-small")
 
 model = model.cuda()
 # AIRA: Hi I am AIRA, An Intelligent Robot Assistant. I am so happy to be here. [laughs] My name is an acronym Actually, It goes like this An Intelligent Robot Assistant.
+
+
+
 inputs = processor(
     text=["AIRA: Hi I am AIRA, An Intelligent Robot Assistant. I am so happy to be here. [laughs] My name is an acronym Actually, It goes like this An Intelligent Robot Assistant."],
     return_tensors="pt",
