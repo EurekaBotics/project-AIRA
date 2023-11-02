@@ -1,5 +1,3 @@
-
-
 #include <Servo.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -567,7 +565,7 @@ const unsigned char sad_emot [] PROGMEM = {
 void display_JF(){
 for(int temp=0;temp<2;temp++)
 {
-display.clearDisplay();
+  display.clearDisplay();
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(40,15);  
@@ -621,11 +619,7 @@ display.clearDisplay();
   display.println("7-MUSKETEERS");
   display.display();
   delay(500);
-
 }
-
-
-
 }
 
 void happy()
@@ -725,12 +719,14 @@ void lookright(){
 
 void eyeMoves(){
   blink_eye();
-  lookright();lookright();
+  lookright();
+  lookright();
   blink_eye();
   happy();
   angry();
   sad();
-  lookleft();lookleft();
+  lookleft();
+  lookleft();
 }
 
 //Sensor
@@ -740,6 +736,7 @@ void eyeMoves(){
 
 int angle=90;
 int t = 0.1;
+
 int p1 = 6;
 int p2 = 7;
 int p3 = 8;
@@ -757,26 +754,12 @@ void setup() {
   pinMode(p5,INPUT);
   
   Serial.begin(9600);
-
- 
-
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
       Serial.println(F("SSD1306 allocation failed"));
     }
   display.clearDisplay();
-
-  
   display_JF();
   eyeMoves();
- 
-  
-
-
-
-
-
-
-
 }
 
 void loop() {
@@ -793,15 +776,12 @@ int val5 = digitalRead(p5);
 //int p4 = 9;
 //int p5 = 10;
 
-
-
 Serial.println(val1);
 if(val1 == 1)
 {
   lookright();
   print("Hello");
 }
-//
 else if(val2 == 1)
 {
   lookleft();
@@ -818,8 +798,6 @@ else if(val5==1)
 {
   angry();
 }
-//
-////delay(t);
-blink_eye();
 
+blink_eye();
 }

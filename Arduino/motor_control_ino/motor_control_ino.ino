@@ -30,7 +30,7 @@ void setup() {
   delay(10);
 //  wave();
 }
-
+// 
 void loop() {
 
   if(Serial.available() > 0){  
@@ -59,16 +59,12 @@ void loop() {
     }
       
   }
-  
-
 //  else if (!command.equals("wave")){
 //    wave();
 //  }
   }
 
 }
-
-
 
 void wave(){
 

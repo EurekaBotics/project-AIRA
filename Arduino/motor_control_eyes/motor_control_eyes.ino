@@ -79,7 +79,8 @@ void loop() {
     }
 
     else if(angle == 200){
-      wave();
+      // wave();
+      salute();
     }
 
     else if(angle == 300){
@@ -105,27 +106,19 @@ void loop() {
     else if(angle == 700){
       digitalWrite(angry, HIGH);
       delay(t);
-    }
-
-    
-  }
-
-}
-
+    }}}
 
 
 void wave(){
-
   int angle_90 = map(90, 0, 180, SERVOMIN, SERVOMAX);
-
   for (uint16_t pulselen=angle_90; pulselen > SERVOMIN; pulselen--){
    myServo.setPWM(base_link,  0, pulselen);
    myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
    delay(10);     
   }
 
-
-//  wave1
+// Wave 2 times
+for (int var=0; var<2; var++){
   for (uint16_t pulselen=angle_90; pulselen < SERVOMAX; pulselen++){
    myServo.setPWM(shoulder,  0, pulselen);
    delay(3);     
@@ -140,21 +133,7 @@ void wave(){
    myServo.setPWM(shoulder, 0, pulselen);
    delay(3);     
   }
-//  wave2
-  for (uint16_t pulselen=angle_90; pulselen < SERVOMAX; pulselen++){
-   myServo.setPWM(shoulder,  0, pulselen);
-   delay(3);     
-  }
-
-  for (uint16_t pulselen=SERVOMAX; pulselen > SERVOMIN; pulselen--){
-   myServo.setPWM(shoulder,  0, pulselen);
-   delay(3);     
-  }
-
-  for (uint16_t pulselen=SERVOMIN; pulselen < angle_90; pulselen++){
-   myServo.setPWM(shoulder, 0, pulselen);
-   delay(3);     
-  }
+}
 
   for (uint16_t pulselen=SERVOMIN; pulselen < angle_90-30; pulselen++){
    myServo.setPWM(base_link,  0, pulselen);
@@ -164,18 +143,54 @@ void wave(){
   // Detach the base_link servo
   myServo.setPWM(base_link, 0, 0);
   myServo.setPWM(elbow, 0, 0);
-
-  
-
-//  int angle_120 = map(120, 0, 180, SERVOMIN, SERVOMAX);
-  
-  
-//  myServo.setPWM(elbow,  0, SERVOMAX - angle_120);   
-//  for (uint16_t pulselen=angle_90; pulselen < angle_90+40; pulselen++){
-//    myServo.setPWM(base_link,  0, pulselen);
-//    myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
-//    delay(10);     
-//  }
-  
-  
 }
+
+void hi(){
+  int angle_90 = map(90, 0, 180, SERVOMIN, SERVOMAX);
+  for (uint16_t pulselen=angle_90; pulselen > SERVOMIN; pulselen--){
+   myServo.setPWM(base_link,  0, pulselen);
+   myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
+   delay(10);     
+  }
+  delay(2000);
+  for (uint16_t pulselen=SERVOMIN; pulselen < angle_90-30; pulselen++){
+   myServo.setPWM(base_link,  0, pulselen);
+   myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
+   delay(10);     
+  }
+  // Detach the base_link servo
+  myServo.setPWM(base_link, 0, 0);
+  myServo.setPWM(elbow, 0, 0);
+}
+
+
+void salute(){
+  int angle_90 = map(90, 0, 180, SERVOMIN, SERVOMAX);
+  for (uint16_t pulselen=angle_90; pulselen > SERVOMIN; pulselen--){
+   myServo.setPWM(base_link,  0, pulselen);
+   myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
+   delay(10);     
+  }
+
+
+  for (uint16_t pulselen=angle_90; pulselen < SERVOMAX-30; pulselen++){
+   myServo.setPWM(shoulder, 0, pulselen);
+   delay(3);     
+  }
+
+  for (uint16_t pulselen=SERVOMAX; pulselen > SERVOMIN-90; pulselen--){
+   myServo.setPWM(shoulder,  0, pulselen);
+   delay(3);     
+  }
+
+
+  for (uint16_t pulselen=SERVOMIN; pulselen < angle_90-30; pulselen++){
+   myServo.setPWM(base_link,  0, pulselen);
+   myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
+   delay(10);     
+  }
+  // Detach the base_link servo
+  myServo.setPWM(base_link, 0, 0);
+  myServo.setPWM(elbow, 0, 0);
+}
+
