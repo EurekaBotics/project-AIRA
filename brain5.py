@@ -6,13 +6,14 @@ from txt2speech import STT
 import cv2
 import mediapipe as mp
 import threading
+
 from AIRASpeech import BarkSpeech
-# from serial import Serial
-print('ello')
+Thread = threading.Thread
+from serial import Serial
 Thread = threading.Thread
 
 
-# ard = Serial("COM4", 9600) 
+ard = Serial("COM4", 9600)
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
@@ -134,10 +135,6 @@ def eyes():
     cv2.destroyAllWindows()
     cam.release()
 
-# subprocess.run("echo hello")    
-
-# exit(0)
-
 class Brain():
 
     def __init__(self) -> None:
@@ -224,7 +221,6 @@ def chat(msg:str):
     # print(f"chat: {msg}")  
 
 
-
 def hi(msg:str):
     print(f"wave: {msg}")
     # ard.write(b'200')
@@ -242,7 +238,6 @@ def vqa(msg:str):
 
 def detect_obj(obj:str):
     print(f"detect_obj:{obj}")
-    # HEllo world
 
 def find(msg:str):
     print(f"find: {msg}")  
@@ -259,7 +254,8 @@ def happy():
 
 def angry():
     print("angry")
-    # ard.write(b'600')
+    ard.write(b'600')
+    
 def sad():
     print("sad")
     # ard.write(b'700')
@@ -277,42 +273,55 @@ if __name__ ==  "__main__":
     bark = BarkSpeech()
     # Thread(target=head).start()
     mutex = 0
-    while True:
 
-        try:
-            print("hello")
-            voice = whisp.listen()
-            msg = whisp.transcribe(voice)
-            # msg = input(">>>")
-            print(msg)
-            # os.system("cls")
-            msg_l = msg.lower()
-            if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or 'era' in msg_l or "robot" in msg_l or 'robert' in msg_l:
+    def main_process():
+        while True:
+            try:
+                voice = whisp.listen()
+                msg = whisp.transcribe(voice)
+                # msg = input(">>>")
+                print(msg)
+                # os.system("cls")
+                msg_l = msg.lower()
+                if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or 'era' in msg_l or "robot" in msg_l or 'robert' in msg_l:
 
-                response, response_message = chat(msg)
+                    response, response_message = chat(msg)
 
-                # Step 2: check if GPT wanted to call a function
-                print("AIRA: ",response)
-                actions, emotions = B.parser(response)
+                    # Step 2: check if GPT wanted to call a function
+                    print("AIRA: ",response)
+                    actions, emotions = B.parser(response)
 
-                if actions:
-                    params = B.parse_parameter(actions)
-                    B(actions, params)
-                elif emotions:
-                    print(emotions)
-                    for emotion in emotions:
-                        print("emotion",emotion)
-                        globals()[emotion]()
-
-                    # pass
-
-                cleaned_response = B.clean(response)
-                # print("AIRA: ",cleaned_response)
-                # engine.say(cleaned_response)
-                # engine.runAndWait()
-                bark(cleaned_response)
-                print("AIRA: ",cleaned_response)
+                    if actions:
+                        params = B.parse_parameter(actions)
+                        B(actions, params)
+                    elif emotions:
+                        print(emotions)
+                        for emotion in emotions:
+                            print("emotion",emotion)
+                            globals()[emotion]()
 
 
-        except Exception:
-            print("error")
+                    cleaned_response = B.clean(response)
+                    print("AIRA: ",cleaned_response)
+                    engine.say(cleaned_response)
+                    engine.runAndWait()
+
+            except Exception:
+                print("error")
+
+    
+    def user_interface():
+        app = QApplication(sys.argv)
+        window = FullScreenApp()
+        window.showFullScreen()
+        sys.exit(app.exec_())
+
+    thread1 = threading.Thread(target=main_process)
+    thread2 = threading.Thread(target=user_interface)
+    print("processes are starting")
+    thread1.start()
+    thread2.start()
+
+    thread1.join()
+    thread2.join()
+    print("Both tasks have completed.")
