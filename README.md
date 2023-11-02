@@ -1,2 +1,0 @@
-# project-AIRA
-Kollada Kollada
