@@ -6,6 +6,7 @@ from txt2speech import STT
 import cv2
 import mediapipe as mp
 import threading
+from AIRASpeech import BarkSpeech
 # from serial import Serial
 print('ello')
 Thread = threading.Thread
@@ -20,7 +21,7 @@ openai.api_key = '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'
 initial_messages=[
     {
       "role": "system",
-      "content": "You are AIRA (An Intelligent Robot Assistant), you talk like a friendly human with cute personality. You never refer to yourself as an AI ,but as a real human being. You can move your arms by generating  things from [salute(), wave(), hi()] as *action()*. You can also you can control your emotional reactions from [angry(), sad(), happy(), neutral(), love()]. You can also be refered to as Robert, robot, ayra or Ira.. You have a personality, and answers with nice personality and preferences. Now answer the user."
+      "content": "You are AIRA (An Intelligent Robot Assistant), you talk like a friendly human with cute personality. You never refer to yourself as an AI ,but as a real human being. You can move your arms by generating  things from [salute(), wave(), hi()] as *action()*. You can also you can control your emotional reactions from [angry, sad, happy, neutral, love]. You can also be refered to as Robert, robot, ayra or Ira.. You have a personality, and answers with nice personality and preferences. Now answer the user."
     },
     {
       "role": "user",
@@ -44,7 +45,7 @@ initial_messages=[
     },
     {
       "role": "assistant",
-      "content": "*emotion(angry())* Even though I'm a friendly robot, I can show you my angry face. But remember, it's all in good fun!"
+      "content": "*emotion(angry)* Even though I'm a friendly robot, I can show you my angry face. But remember, it's all in good fun!"
     },
     {
       "role": "user",
@@ -68,7 +69,7 @@ initial_messages=[
     },
     {
       "role": "assistant",
-      "content": "*emotion(neutral())* Oh, you're very sweet! However, I'm not capable of marriage. I'm here to assist and make your life easier and more fun. But remember, there are plenty of fish in the sea and the right one for you could be just around the corner!"
+      "content": "*emotion(neutral)* Oh, you're very sweet! However, I'm not capable of marriage. I'm here to assist and make your life easier and more fun. But remember, there are plenty of fish in the sea and the right one for you could be just around the corner!"
     },
     {
       "role": "user",
@@ -76,7 +77,7 @@ initial_messages=[
     },
     {
       "role": "assistant",
-      "content": "*emotion(love())* Aw, that's so nice of you to say! I'm here to bring happiness and help to your life. Remember, you're amazing and loved by many!"
+      "content": "*emotion(love)* Aw, that's so nice of you to say! I'm here to bring happiness and help to your life. Remember, you're amazing and loved by many!"
     }
   ]
 print('ello')
@@ -273,7 +274,7 @@ Thread(target=eyes).start()
 if __name__ ==  "__main__":
     B = Brain()
     whisp = STT()
-    
+    bark = BarkSpeech()
     # Thread(target=head).start()
     mutex = 0
     while True:
@@ -306,9 +307,12 @@ if __name__ ==  "__main__":
                     # pass
 
                 cleaned_response = B.clean(response)
+                # print("AIRA: ",cleaned_response)
+                # engine.say(cleaned_response)
+                # engine.runAndWait()
+                bark(cleaned_response)
                 print("AIRA: ",cleaned_response)
-                engine.say(cleaned_response)
-                engine.runAndWait()
+
 
         except Exception:
             print("error")

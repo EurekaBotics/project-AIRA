@@ -1,7 +1,8 @@
 from typing import Any
 from transformers import AutoProcessor, AutoModel
 import scipy
-import time
+import torch
+# import time
 import pygame
 
 
@@ -34,10 +35,11 @@ class BarkSpeech():
         inputs['history_prompt']['semantic_prompt'] = inputs['history_prompt']['semantic_prompt'].cuda()
         inputs['history_prompt']['coarse_prompt'] = inputs['history_prompt']['coarse_prompt'].cuda()
         inputs['history_prompt']['fine_prompt'] = inputs['history_prompt']['fine_prompt'].cuda()
-        
-        speech_values = self.model.generate(**inputs, do_sample=True)
-        sampling_rate = self.model.generation_config.sample_rate
-        scipy.io.wavfile.write("bark_out.wav", rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
+        with torch.inference_mode():
+
+            speech_values = self.model.generate(**inputs, do_sample=True)
+            sampling_rate = self.model.generation_config.sample_rate
+            scipy.io.wavfile.write("bark_out.wav", rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
 
         pygame.mixer.music.load('bark_out.wav')
         pygame.mixer.music.play()
