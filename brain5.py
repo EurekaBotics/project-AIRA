@@ -207,7 +207,6 @@ def user_interface():
             image_window_test.FullScreenApp.fadeIn()
             image_window_test.FullScreenApp.updateText(BUFFER.pop())
         
-
 def chat(msg:str):
     global initial_messages
     initial_messages.append(
