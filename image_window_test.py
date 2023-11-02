@@ -10,7 +10,7 @@ class FullScreenApp(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle("Glassmorphism Box in Center")
-        self.setGeometry(0, 0, 1920, 1080)
+        self.setGeometry(0, 0, 1920, 1200)
 
         background_image = QPixmap("background.png")
         palette = QPalette()
@@ -64,28 +64,7 @@ class FullScreenApp(QMainWindow):
         QTimer.singleShot(2000, self.fadeIn)
 
         # Simulate text coming to the buffer in a loop
-        self.text_to_simulate = [
-    "This is text 1.",
-    "Here comes text 2.",
-    "Text 3 is here.",
-    "And now text 4 arrives.",
-    "Fifth text entry.",
-    "Sixth text entry.",
-    "Seventh text entry.",
-    "Eighth text entry.",
-    "Ninth text entry.",
-    "Tenth text entry.",
-    "Eleventh text entry.",
-    "Twelfth text entry.",
-    "Thirteenth text entry.",
-    "Fourteenth text entry.",
-    "Fifteenth text entry.",
-    "Sixteenth text entry.",
-    "Seventeenth text entry.",
-    "Eighteenth text entry.",
-    "Nineteenth text entry.",
-    "Twentieth text entry."
-]
+        self.text_to_simulate = []
 
         self.simulation_index = 0
 

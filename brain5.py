@@ -6,14 +6,17 @@ from txt2speech import STT
 import cv2
 import mediapipe as mp
 import threading
-
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFrame, QVBoxLayout, QWidget, QTextBrowser
+from PyQt5.QtGui import QPixmap, QPalette, QBrush, QFont, QTextCursor
+from PyQt5.QtCore import Qt, QTimer
 from AIRASpeech import BarkSpeech
-Thread = threading.Thread
-from serial import Serial
+# from serial import Serial
+import image_window_test 
 Thread = threading.Thread
 
 
-ard = Serial("COM4", 9600)
+# ard = Serial("COM4", 9600)
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
@@ -81,6 +84,9 @@ initial_messages=[
       "content": "*emotion(love)* Aw, that's so nice of you to say! I'm here to bring happiness and help to your life. Remember, you're amazing and loved by many!"
     }
   ]
+app = QApplication(sys.argv)
+window = image_window_test.FullScreenApp()
+window.showFullScreen()
 print('ello')
 cx = 0
 prevcx = 0
@@ -194,6 +200,13 @@ class Brain():
             return actions[1:]
         else:
             return actions
+        
+def user_interface():
+        if BUFFER:
+            print("Cow")
+            image_window_test.FullScreenApp.fadeIn()
+            image_window_test.FullScreenApp.updateText(BUFFER.pop())
+        
 
 def chat(msg:str):
     global initial_messages
@@ -204,7 +217,7 @@ def chat(msg:str):
     response = openai.ChatCompletion.create(
         model="gpt-4-0613",
         messages=initial_messages,
-        temperature=1,
+        temperature=.7,
         max_tokens=256,
         top_p=1,
         frequency_penalty=0,
@@ -254,7 +267,7 @@ def happy():
 
 def angry():
     print("angry")
-    ard.write(b'600')
+    # ard.write(b'600')
     
 def sad():
     print("sad")
@@ -264,64 +277,63 @@ def neutral():
     print("neutral")
 
 Thread(target=eyes).start()
-# Thread(target=head).start()
+Thread(target=user_interface).start()
 
 # exit(0)
 if __name__ ==  "__main__":
     B = Brain()
     whisp = STT()
-    bark = BarkSpeech()
+    # bark = BarkSpeech()
     # Thread(target=head).start()
     mutex = 0
-
-    def main_process():
-        while True:
-            try:
-                voice = whisp.listen()
-                msg = whisp.transcribe(voice)
-                # msg = input(">>>")
-                print(msg)
-                # os.system("cls")
-                msg_l = msg.lower()
-                if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or 'era' in msg_l or "robot" in msg_l or 'robert' in msg_l:
-
-                    response, response_message = chat(msg)
-
-                    # Step 2: check if GPT wanted to call a function
-                    print("AIRA: ",response)
-                    actions, emotions = B.parser(response)
-
-                    if actions:
-                        params = B.parse_parameter(actions)
-                        B(actions, params)
-                    elif emotions:
-                        print(emotions)
-                        for emotion in emotions:
-                            print("emotion",emotion)
-                            globals()[emotion]()
-
-
-                    cleaned_response = B.clean(response)
-                    print("AIRA: ",cleaned_response)
-                    engine.say(cleaned_response)
-                    engine.runAndWait()
-
-            except Exception:
-                print("error")
+    BUFFER = []
 
     
-    def user_interface():
-        app = QApplication(sys.argv)
-        window = FullScreenApp()
-        window.showFullScreen()
-        sys.exit(app.exec_())
+    while True:
+        try:
+            voice = whisp.listen()
+            msg = whisp.transcribe(voice)
+            # msg = input(">>>")
+            BUFFER.append(voice)
+            print(msg)
+            # os.system("cls")
+            msg_l = msg.lower()
+            if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or 'era' in msg_l or "robot" in msg_l or 'robert' in msg_l:
 
-    thread1 = threading.Thread(target=main_process)
-    thread2 = threading.Thread(target=user_interface)
-    print("processes are starting")
-    thread1.start()
-    thread2.start()
+                response, response_message = chat(msg)
 
-    thread1.join()
-    thread2.join()
-    print("Both tasks have completed.")
+                # Step 2: check if GPT wanted to call a function
+                print("AIRA: ",response)
+                actions, emotions = B.parser(response)
+
+                if actions:
+                    params = B.parse_parameter(actions)
+                    B(actions, params)
+                elif emotions:
+                    print(emotions)
+                    for emotion in emotions:
+                        print("emotion",emotion)
+                        globals()[emotion]()
+
+
+                cleaned_response = B.clean(response)
+                BUFFER.append(cleaned_response)
+                # print("AIRA: ",cleaned_response)
+                BUFFER.append((msg, cleaned_response))
+                engine.say(cleaned_response)
+                engine.runAndWait()
+
+        except Exception:
+            print("error")
+
+  
+
+    # thread1 = threading.Thread(target=main_process)
+    # thread2 = threading.Thread(target=user_interface)
+    # print("processes are starting")
+    # thread1.start()
+    # thread2.start()
+
+    # thread1.join()
+    # thread2.join()
+    # print("Both tasks have completed.")
