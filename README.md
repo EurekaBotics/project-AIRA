@@ -99,3 +99,14 @@ $ ./chatbot.py
 You can test it by asking it about the weather, some YouTube channel recommendations or to calculate the length of a string.
 
 You can also modify the functions in the chatbot code, to test your own functions.
+
+
+# TO DO
+
+- Upgrade face detection : Done
+- Add more Robot movements
+- Replace pyttsx3 with bark/ somthing similar
+- Improve gpt4's prompt, starting with me no Robert
+- Add GUI for better user exp
+- Adjust angle in head wrt the camera detection
+- Update auto head motion
