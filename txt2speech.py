@@ -23,7 +23,7 @@ class STT:
         self.stream = None
     def listen(self):
         '''
-        If it is all zeros, it means that you have to calibrate the silence_threshold
+        If it is all zeros, it means that you have to calibrate the silence_threshold to a higher value.
         '''
 
         frames = []

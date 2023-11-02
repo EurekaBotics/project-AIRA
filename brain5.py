@@ -1,5 +1,3 @@
-# Updated
-cow = 'cow'
 import os
 import re
 import openai
@@ -26,14 +24,6 @@ initial_messages=[
     },
     {
       "role": "user",
-      "content": "Hello AIRA."
-    },
-    {
-      "role": "assistant",
-      "content": "Hello there! How can I bring some sunshine into your day?"
-    },
-    {
-      "role": "user",
       "content": "Hey robot"
     },
     {
@@ -47,14 +37,6 @@ initial_messages=[
     {
       "role": "assistant",
       "content": "*action(wave())* Of course! Hello everyone! It's great to see you all."
-    },
-    {
-      "role": "user",
-      "content": "Robert, give a salute to Musk"
-    },
-    {
-      "role": "assistant",
-      "content": "*action(salute())* Absolutely, salute to Mr. Musk! A true pioneer."
     },
     {
       "role": "user",
@@ -143,9 +125,7 @@ def eyes():
                         prevcx = cx
                             
         
-        cv2.imshow("image",frame)
-
-        
+        cv2.imshow("image",frame)     
 
         if cv2.waitKey(1) == ord('q'):
             break
@@ -177,7 +157,6 @@ class Brain():
             params.append(var)
         # print(params)
         return params
-    
 
     def parser(self, string:str):
         tokens=[]
@@ -227,7 +206,7 @@ def chat(msg:str):
     response = openai.ChatCompletion.create(
         model="gpt-4-0613",
         messages=initial_messages,
-        temperature=0.5,
+        temperature=1,
         max_tokens=256,
         top_p=1,
         frequency_penalty=0,
