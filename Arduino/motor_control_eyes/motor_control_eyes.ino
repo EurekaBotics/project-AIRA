@@ -77,33 +77,42 @@ void loop() {
       Serial.print("Head servo set to angle: ");
       Serial.println(angle);
     }
-
+    // 200+ refers to different actions
     else if(angle == 200){
-      // wave();
-      salute();
+      hi();
     }
 
+    else if(angle == 201){
+      wave();
+      }
+
+    else if(angle == 202){
+      // wave();
+    salute();
+    }
+
+    // 300+ Refers to eye actions
     else if(angle == 300){
       digitalWrite(lookright, HIGH);  
       delay(t);
     }
 
-    else if(angle == 400){
+    else if(angle == 301){
       digitalWrite(lookleft, HIGH);
       delay(t);
     }
 
-    else if(angle == 500){
+    else if(angle == 302){
       digitalWrite(happy, HIGH);
       delay(t);
     }
 
-    else if(angle == 600){
+    else if(angle == 303){
       digitalWrite(sad, HIGH);
       delay(t);
     }
 
-    else if(angle == 700){
+    else if(angle == 304){
       digitalWrite(angry, HIGH);
       delay(t);
     }}}
@@ -116,7 +125,6 @@ void wave(){
    myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
    delay(10);     
   }
-
 // Wave 2 times
 for (int var=0; var<2; var++){
   for (uint16_t pulselen=angle_90; pulselen < SERVOMAX; pulselen++){
@@ -166,23 +174,23 @@ void hi(){
 
 void salute(){
   int angle_90 = map(90, 0, 180, SERVOMIN, SERVOMAX);
+  int salute_angle = SERVOMAX-140;
   for (uint16_t pulselen=angle_90; pulselen > SERVOMIN; pulselen--){
    myServo.setPWM(base_link,  0, pulselen);
    myServo.setPWM(elbow,  0, SERVOMAX - 70 - pulselen);   
    delay(10);     
   }
 
-
-  for (uint16_t pulselen=angle_90; pulselen < SERVOMAX-30; pulselen++){
+  for (uint16_t pulselen=angle_90; pulselen < salute_angle; pulselen++){
    myServo.setPWM(shoulder, 0, pulselen);
    delay(3);     
   }
+  delay(3000);
 
-  for (uint16_t pulselen=SERVOMAX; pulselen > SERVOMIN-90; pulselen--){
+  for (uint16_t pulselen = salute_angle; pulselen > angle_90; pulselen--){
    myServo.setPWM(shoulder,  0, pulselen);
    delay(3);     
   }
-
 
   for (uint16_t pulselen=SERVOMIN; pulselen < angle_90-30; pulselen++){
    myServo.setPWM(base_link,  0, pulselen);
