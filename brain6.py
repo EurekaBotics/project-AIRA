@@ -13,6 +13,7 @@ from serial import Serial
 Thread = threading.Thread
 
 ard = Serial("COM4", 9600) 
+
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
@@ -262,6 +263,10 @@ if __name__ ==  "__main__":
 
         try:
 
+            # if mutex == 0:
+            #     Thread(target=head).start()
+            #     mutex+=1
+            # print("cx",cx)
             voice = whisp.listen()
             msg = whisp.transcribe(voice)
             # msg = input(">>>")
