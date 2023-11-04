@@ -13,10 +13,6 @@ A repository for making the collaboration easier
 
 -Team details updating 
 
--Ground patch
-
--Head flickering issue
-
 -Time and date
 
 -UI Update
