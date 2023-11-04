@@ -1,3 +1,4 @@
+'No bark version, testing GUI'
 import re
 import openai
 import pyttsx3
