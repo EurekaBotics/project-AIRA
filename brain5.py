@@ -1,4 +1,6 @@
 import os
+from WeatherAPI import *
+import json
 import re
 import openai
 import pyttsx3
@@ -84,6 +86,34 @@ initial_messages=[
       "content": "*emotion(love)* Aw, that's so nice of you to say! I'm here to bring happiness and help to your life. Remember, you're amazing and loved by many!"
     }
   ]
+
+functions = [
+        {
+            "name": "get_current_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                },
+                "required": ["location"],
+            },
+        },
+]
+def get_current_weather(location, unit="fahrenheit"):
+    """Get the current weather in a given location"""
+    weather_info = {
+        "location": location,
+        "temperature": "72",
+        "unit": unit,
+        "forecast": ["sunny", "windy"],
+    }
+    return json.dumps(weather_info)
+
 app = QApplication(sys.argv)
 window = image_window_test.FullScreenApp()
 window.showFullScreen()
@@ -216,6 +246,7 @@ def chat(msg:str):
     response = openai.ChatCompletion.create(
         model="gpt-4-0613",
         messages=initial_messages,
+        functions = functions,
         temperature=.7,
         max_tokens=256,
         top_p=1,
@@ -275,8 +306,8 @@ def sad():
 def neutral():
     print("neutral")
 
-Thread(target=eyes).start()
-Thread(target=user_interface).start()
+# Thread(target=eyes).start()
+# Thread(target=user_interface).start()
 
 # exit(0)
 if __name__ ==  "__main__":
@@ -300,7 +331,38 @@ if __name__ ==  "__main__":
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or 'era' in msg_l or "robot" in msg_l or 'robert' in msg_l:
 
                 response, response_message = chat(msg)
+                
+                if response_message.get('function_call'):
+                    
+                    available_functions = {
+                        "get_current_weather": get_current_weather
+                    }  # only one function in this example, but you can have multiple
+                    function_name = response_message["function_call"]["name"]
+                    function_to_call = available_functions[function_name]
+                    function_args = json.loads(response_message["function_call"]["arguments"])
 
+                    function_response = function_to_call(
+                        location=function_args.get("location"),
+                        unit=function_args.get("unit"),
+                    )
+
+                    initial_messages.append(response_message)  # extend conversation with assistant's reply
+                    initial_messages.append(
+                        {
+                            "role": "function",
+                            "name": function_name,
+                            "content": function_response,
+                        }
+                    )  # extend conversation with function response
+                    second_response = openai.ChatCompletion.create(
+                        model="gpt-3.5-turbo-0613",
+                        messages=initial_messages,
+                    )
+
+                    print("AIRA: ", second_response['choices'][0]['message']['content'])
+                    engine.say(second_response['choices'][0]['message']['content'])
+                    engine.runAndWait()
+                    continue
                 # Step 2: check if GPT wanted to call a function
                 print("AIRA: ",response)
                 actions, emotions = B.parser(response)
@@ -313,7 +375,6 @@ if __name__ ==  "__main__":
                     for emotion in emotions:
                         print("emotion",emotion)
                         globals()[emotion]()
-
 
                 cleaned_response = B.clean(response)
                 BUFFER.append(cleaned_response)

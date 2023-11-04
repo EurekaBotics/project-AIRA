@@ -2,9 +2,7 @@ import openai
 import os
 import json
 
-
 openai.api_key = os.environ["API_KEY"]
-
 
 def wave_hands(val):
     """Wave robot hands when asked to, or while greeting Hi or Hello"""
