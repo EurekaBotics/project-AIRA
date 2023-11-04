@@ -1,22 +1,14 @@
 
 # AIRA - An Intelligent Robot Assistant
-
-A repository for making the collaboration easier
+A repository for making the collaboration easier.
 
 ## Roadmap
-
--Add infro about karealeeyam
-
--Location access
-
--Weather update
-
--Team details updating 
-
--Time and date
-
--UI Update
-
-
-
-
+ - Add info about karealeeyam
+ - Team details updating 
+ - Real time data access
+   - Location access
+   - Weather update
+   - Time and date
+ - Add GUI
+ - Website and Team card
+ - 
