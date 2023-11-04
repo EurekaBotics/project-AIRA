@@ -28,3 +28,5 @@ Aira's capacity to learn from experience ensures its continuous growth and refin
  - Add GUI
  - Website and Team card
  - Head control with commands
+
+Fuck You
