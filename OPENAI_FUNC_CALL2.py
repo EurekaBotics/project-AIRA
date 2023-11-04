@@ -14,8 +14,6 @@ def open_decorator(func):
     
     return wrapper
 
-
-
 @open_decorator
 def wave_hands():
 
@@ -28,7 +26,6 @@ f = wave_hands
 print(f.__name__)
 print(f.__doc__)
 f()
-# print(f.__globals__)
 
 
 
