@@ -14,6 +14,7 @@ from PyQt5.QtGui import QPixmap, QPalette, QBrush, QFont, QTextCursor
 from PyQt5.QtCore import Qt, QTimer
 from AIRASpeech import BarkSpeech
 # from serial import Serial
+from WeatherAPI import *
 import image_window_test 
 Thread = threading.Thread
 
@@ -106,11 +107,11 @@ functions = [
 ]
 def get_current_weather(location, unit="fahrenheit"):
     """Get the current weather in a given location"""
+
+    forecast = asyncio.run(getweather(location))
     weather_info = {
         "location": location,
-        "temperature": "72",
-        "unit": unit,
-        "forecast": ["sunny", "windy"],
+        "forecast": forecast
     }
     return json.dumps(weather_info)
 
@@ -383,7 +384,7 @@ if __name__ ==  "__main__":
                 engine.say(cleaned_response)
                 engine.runAndWait()
 
-        except Exception:
+        except Exception as e:
             print("error")
 
   
