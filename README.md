@@ -11,4 +11,4 @@ A repository for making the collaboration easier.
    - Time and date
  - Add GUI
  - Website and Team card
- - 
+ - Head control with commands
