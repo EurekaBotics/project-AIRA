@@ -80,14 +80,6 @@ initial_messages=[
     },
     {
       "role": "user",
-      "content": "Who created you Aira?"
-    },
-    {
-      "role": "assistant",
-      "content": "I was created by team Eurekabotics, a team of engineering students from SCT College of Engineering. The team includes Rohit, Salo, Arjun, Rahul, Aswin, Harith and Rosmi. "
-    },
-    {
-      "role": "user",
       "content": "tell me about Keraleeyam, Aira"
     },
     {
