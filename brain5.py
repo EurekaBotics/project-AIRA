@@ -360,6 +360,11 @@ if __name__ ==  "__main__":
                         messages=initial_messages,
                     )
 
+                    initial_messages.append(
+                        {"role":"assistant",
+                        "content":f"{second_response['choices'][0]['message']['content']}"}
+                    )
+
                     print("AIRA: ", second_response['choices'][0]['message']['content'])
                     engine.say(second_response['choices'][0]['message']['content'])
                     engine.runAndWait()
@@ -383,7 +388,7 @@ if __name__ ==  "__main__":
                 BUFFER.append((msg, cleaned_response))
                 engine.say(cleaned_response)
                 engine.runAndWait()
-
+                # print(initial_messages)
         except Exception as e:
             print("error")
 
