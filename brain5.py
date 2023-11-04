@@ -398,7 +398,7 @@ if __name__ ==  "__main__":
                 engine.runAndWait()
                 # print(initial_messages)
         except Exception as e:
-            print("error")
+            print("error:", e)
 
   
 
