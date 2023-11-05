@@ -1,6 +1,10 @@
+<<<<<<< Updated upstream
 import os
 from WeatherAPI import *
 import json
+=======
+import time
+>>>>>>> Stashed changes
 import re
 import openai
 import pyttsx3
@@ -8,12 +12,22 @@ from txt2speech import STT
 import cv2
 import mediapipe as mp
 import threading
+<<<<<<< Updated upstream
 import sys
 
 # from AIRASpeech import BarkSpeech
 from serial import Serial
 from WeatherAPI import *
 import image_window_test 
+=======
+# import sys
+# from PyQt5.QtWidgets import QApplication, QMainWindow, QFrame, QVBoxLayout, QWidget, QTextBrowser
+# from PyQt5.QtGui import QPixmap, QPalette, QBrush, QFont, QTextCursor
+# from PyQt5.QtCore import Qt, QTimer
+# from AIRASpeech import BarkSpeech
+from serial import Serial  
+# import image_window_test 
+>>>>>>> Stashed changes
 Thread = threading.Thread
 
 
@@ -85,6 +99,7 @@ initial_messages=[
       "content": "‘Keraleeyam’, the biggest celebration of Kerala, will be held from November 1st to November 7th at Thiruvananthapuram, Kerala. Organized by the Government of Kerala, Keraleeyam aims to present Kerala’s progress, achievements, and cultural heritage to the world. With seminars, activities, exhibitions, fairs, festivals, and shows in more than 40 venues, Keraleeyam will showcase the ‘Best of Kerala’."
     }
   ]
+<<<<<<< Updated upstream
 
 functions = [
         {
@@ -113,6 +128,8 @@ def get_current_weather(location, unit="fahrenheit"):
     }
     return json.dumps(weather_info)
 
+=======
+>>>>>>> Stashed changes
 # app = QApplication(sys.argv)
 # window = image_window_test.FullScreenApp()
 # window.showFullScreen()
@@ -153,8 +170,8 @@ def eyes():
                         cv2.rectangle(frame,(int(x),int(y)),(int(x+iw*w),int(y+h*ih)),(0,255,0),2)
                         cv2.circle(frame,(int((2*x+w*iw)/2),int((2*y+h*ih)/2)),5,(0,255,0),4)
                         cx,cy = int((2*x+w*iw)/2),int((2*y+h*ih)/2)
-                        if abs(cx - prevcx) > 5:
-                            angle = ((cx - 0)*((180-0)/(1080-0)) + 0) - 90
+                        if abs(cx - prevcx) > 20:
+                            angle = ((cx - 0)*((180-70)/(1080-0)) + 0) - 90
                             # print(angle)
                             command = str(angle)
                             ard.write(command.encode())
@@ -162,7 +179,7 @@ def eyes():
                         prevcx = cx
                             
         
-        cv2.imshow("image",frame)     
+        # cv2.imshow("image",frame)     
 
         if cv2.waitKey(1) == ord('q'):
             break
@@ -231,10 +248,17 @@ class Brain():
             return actions
         
 # def user_interface():
+<<<<<<< Updated upstream
         if BUFFER:
             print("Cow")
             image_window_test.FullScreenApp.fadeIn()
             image_window_test.FullScreenApp.updateText(BUFFER.pop())
+=======
+#         if BUFFER:
+#             print("Cow")
+#             image_window_test.FullScreenApp.fadeIn()
+#             image_window_test.FullScreenApp.updateText(BUFFER.pop())
+>>>>>>> Stashed changes
         
 def chat(msg:str):
     global initial_messages
@@ -264,15 +288,27 @@ def chat(msg:str):
 
 
 def hi(msg:str):
+<<<<<<< Updated upstream
     print(f"hi: {msg}")
+=======
+    print(f"wave: {msg}")
+>>>>>>> Stashed changes
     ard.write(b'200')
 
 def wave(msg:str):
     print(f"wave: {msg}")
+<<<<<<< Updated upstream
+=======
+    # time.sleep(1)
+>>>>>>> Stashed changes
     ard.write(b'201')
 
 def salute(msg:str):
     print(f"salute: {msg}")
+<<<<<<< Updated upstream
+=======
+    # time.sleep(1)
+>>>>>>> Stashed changes
     ard.write(b'202')
 
 def vqa(msg:str):
@@ -292,6 +328,10 @@ def place(obj:str):
 
 def happy():
     print("happy")
+<<<<<<< Updated upstream
+=======
+    # time.sleep(01)
+>>>>>>> Stashed changes
     ard.write(b'302')
 
 def angry():
@@ -315,8 +355,13 @@ if __name__ ==  "__main__":
     # bark = BarkSpeech()
     # Thread(target=head).start()
     mutex = 0
+<<<<<<< Updated upstream
     # BUFFER = []
     count = 0
+=======
+    # global BUFFER
+    # BUFFER = []
+>>>>>>> Stashed changes
     
     while True:
         try:
@@ -436,11 +481,10 @@ if __name__ ==  "__main__":
                 # Step 2: check if GPT wanted to call a function
                 print("AIRA: ",response)
                 actions, emotions = B.parser(response)
-
                 if actions:
                     params = B.parse_parameter(actions)
                     B(actions, params)
-                elif emotions:
+                if emotions:
                     print(emotions)
                     for emotion in emotions:
                         print("emotion",emotion)

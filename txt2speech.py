@@ -4,7 +4,11 @@ import whisper
 import audioop  
 
 class STT:
+<<<<<<< Updated upstream
     def __init__(self, model_name='small.en', max_silence_seconds=2, silence_threshold=8000, chunk=1024, sample_format=paInt16, channels=1, fs=16000, max_seconds=60):
+=======
+    def __init__(self, model_name='small.en', max_silence_seconds=2, silence_threshold=5000, chunk=1024, sample_format=paInt16, channels=1, fs=16000, max_seconds=60):
+>>>>>>> Stashed changes
         print('Loading model')
         self.model = whisper.load_model(model_name)
         self.chunk = chunk 

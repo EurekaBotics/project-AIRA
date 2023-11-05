@@ -1,6 +1,10 @@
 import openai
 import os
 import json
+<<<<<<< Updated upstream
+=======
+from WeatherAPI import *
+>>>>>>> Stashed changes
 
 openai.api_key = os.environ["API_KEY"]
 
@@ -23,11 +27,11 @@ def handshake(val):
 
 def get_current_weather(location, unit="fahrenheit"):
     """Get the current weather in a given location"""
+
+    forecast = asyncio.run(getweather(location))
     weather_info = {
         "location": location,
-        "temperature": "72",
-        "unit": unit,
-        "forecast": ["sunny", "windy"],
+        "forecast": forecast
     }
     return json.dumps(weather_info)
 
@@ -38,7 +42,7 @@ def run_conversation():
       "role": "system",
       "content": "Your name is A.I.R.A(An Intelligent Robotic Assistant), you are an AI robot who has simulated consciousness and can react emotionally too, you can move your arms by generating  things from [handshake(), wave_hands()], and also you can control your emotional reactions. Give *emotion()* (where emotion() can be angry(), happy(), neutral(), sad() etc..) for every response. Remember you are not a chatbot but an actual program in a Robots body having all the above mentioned features."
     },
-        {"role": "user", "content": "Give everyone a wave."}]
+        {"role": "user", "content": "whats the weather today in Thiruvanthapuram."}]
     functions = [
         {
             "name": "get_current_weather",
@@ -101,15 +105,15 @@ def run_conversation():
         function_to_call = available_functions[function_name]
         function_args = json.loads(response_message["function_call"]["arguments"])
         
-        # function_response = function_to_call(
-        #     location=function_args.get("location"),
-        #     unit=function_args.get("unit"),
-        # )
-
         function_response = function_to_call(
-            function_args.get("val"),
-            # unit=function_args.get("unit"),
+            location=function_args.get("location"),
+            unit=function_args.get("unit"),
         )
+
+        # function_response = function_to_call(
+        #     function_args.get("val"),
+        #     # unit=function_args.get("unit"),
+        # )
 
         # Step 4: send the info on the function call and function response to GPT
         messages.append(response_message)  # extend conversation with assistant's reply

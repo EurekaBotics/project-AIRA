@@ -780,7 +780,6 @@ Serial.println(val1);
 if(val1 == 1)
 {
   lookright();
-  print("Hello");
 }
 else if(val2 == 1)
 {
