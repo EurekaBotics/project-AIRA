@@ -1,10 +1,6 @@
-<<<<<<< Updated upstream
 import os
 from WeatherAPI import *
 import json
-=======
-import time
->>>>>>> Stashed changes
 import re
 import openai
 import pyttsx3
@@ -12,35 +8,46 @@ from txt2speech import STT
 import cv2
 import mediapipe as mp
 import threading
-<<<<<<< Updated upstream
+import queue
+import time
 import sys
-
 # from AIRASpeech import BarkSpeech
 from serial import Serial
 from WeatherAPI import *
-import image_window_test 
-=======
-# import sys
-# from PyQt5.QtWidgets import QApplication, QMainWindow, QFrame, QVBoxLayout, QWidget, QTextBrowser
-# from PyQt5.QtGui import QPixmap, QPalette, QBrush, QFont, QTextCursor
-# from PyQt5.QtCore import Qt, QTimer
-# from AIRASpeech import BarkSpeech
-from serial import Serial  
-# import image_window_test 
->>>>>>> Stashed changes
-Thread = threading.Thread
 
-
-ard = Serial("COM4", 9600)
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
-print("hello")
 openai.api_key = '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'
+arduino_queue = queue.Queue()
+ard = None
+ard = Serial("COM3", 921600)
+
+def ard_comm(arduino_queue):
+    global ard
+    if ard:
+        
+        while True:
+            while arduino_queue.empty():
+                time.sleep(0.2)
+                pass
+            print('Inside')
+            queue_contents = list(arduino_queue.queue)
+            print("Contents of the queue:", queue_contents)
+            code = arduino_queue.get()
+            ard.write(code.encode())
+            time.sleep(0.2)
+    else:
+        print('ard not defined')
+
+arduino_Thread = threading.Thread(target=ard_comm, args=(arduino_queue,), daemon=True)
+arduino_Thread.start()
+Thread = threading.Thread
+
 initial_messages=[
     {
       "role": "system",
-      "content": "You are AIRA, An Intelligent Robot Assistant, but you also go by the names Robert, robot, and Ira. You never refer to yourself as an AI but as a real human being. You can move your arms by generating actions only from [salute(), wave(), hi()] inside *action()*. You can also you can control your emotional reactions from only [angry, sad, happy, neutral]. You have a friendly and cute personality and you do have favorites and preferences and have real-time talking capabilities. You are created by team Eurekabotics, a team of engineering students from SCT College of Engineering. The team includes Rohit, Salo, Arjun, Rahul, Aswin, Harith and Rosmi. You are currently put in an Exhibition for Keraleeyam at University College Palayam."
+      "content": "You are AIRA, An Intelligent Robot Assistant, but you also go by the names Robert and robot. You never refer to yourself as an AI but as a real human being. You can move your arms by generating actions only from [salute(), wave(), hi()] inside *action()*. You can also you can control your emotional reactions from only [angry, sad, happy, neutral]. You have a friendly and cute personality and you do have favorites and preferences and have real-time talking capabilities. You are created by team Eurekabotics, a team of engineering students from SCT College of Engineering. The team includes Rohit, Salo, Arjun, Rahul, Aswin, Harith and Rosmi. You are currently put in an Exhibition for Keraleeyam at University College Palayam."
     },
     {
       "role": "user",
@@ -99,7 +106,6 @@ initial_messages=[
       "content": "‘Keraleeyam’, the biggest celebration of Kerala, will be held from November 1st to November 7th at Thiruvananthapuram, Kerala. Organized by the Government of Kerala, Keraleeyam aims to present Kerala’s progress, achievements, and cultural heritage to the world. With seminars, activities, exhibitions, fairs, festivals, and shows in more than 40 venues, Keraleeyam will showcase the ‘Best of Kerala’."
     }
   ]
-<<<<<<< Updated upstream
 
 functions = [
         {
@@ -118,6 +124,7 @@ functions = [
             },
         },
 ]
+
 def get_current_weather(location, unit="fahrenheit"):
     """Get the current weather in a given location"""
 
@@ -128,29 +135,21 @@ def get_current_weather(location, unit="fahrenheit"):
     }
     return json.dumps(weather_info)
 
-=======
->>>>>>> Stashed changes
-# app = QApplication(sys.argv)
-# window = image_window_test.FullScreenApp()
-# window.showFullScreen()
-print('ello')
-cx = 0
 prevcx = 0
+cx = 0
 def eyes():
-    global cx
+    global prevcx
     # Thread(target=head).start()
     cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
     mp_face = mp.solutions.face_detection
     mp_draw = mp.solutions.drawing_utils
 
-    prevcx = 0
-    cx = 0
-
     x = 0
     y = 0
     cx = 0
     cy = 0
+
     while True:
         ret,frame = cam.read()
         h,w,c = frame.shape
@@ -170,22 +169,23 @@ def eyes():
                         cv2.rectangle(frame,(int(x),int(y)),(int(x+iw*w),int(y+h*ih)),(0,255,0),2)
                         cv2.circle(frame,(int((2*x+w*iw)/2),int((2*y+h*ih)/2)),5,(0,255,0),4)
                         cx,cy = int((2*x+w*iw)/2),int((2*y+h*ih)/2)
-                        if abs(cx - prevcx) > 20:
-                            angle = ((cx - 0)*((180-70)/(1080-0)) + 0) - 90
+                        angle = ((cx - 0)*((180-70)/(1080-0)) + 0)
+                        if abs(prevcx - angle) > 10:
                             # print(angle)
-                            command = str(angle)
-                            ard.write(command.encode())
+                            # with queue_lock:
+                                command = str(int(angle))
+                                print(f'camera: {command}')
+                                prevcx = angle
+                                arduino_queue.put(command)
                             # print(cx, prevcx, abs(cx-prevcx))
-                        prevcx = cx
                             
-        
-        # cv2.imshow("image",frame)     
+        cv2.imshow("image",frame)     
 
         if cv2.waitKey(1) == ord('q'):
             break
-
     cv2.destroyAllWindows()
     cam.release()
+
 
 class Brain():
 
@@ -247,19 +247,6 @@ class Brain():
         else:
             return actions
         
-# def user_interface():
-<<<<<<< Updated upstream
-        if BUFFER:
-            print("Cow")
-            image_window_test.FullScreenApp.fadeIn()
-            image_window_test.FullScreenApp.updateText(BUFFER.pop())
-=======
-#         if BUFFER:
-#             print("Cow")
-#             image_window_test.FullScreenApp.fadeIn()
-#             image_window_test.FullScreenApp.updateText(BUFFER.pop())
->>>>>>> Stashed changes
-        
 def chat(msg:str):
     global initial_messages
     initial_messages.append(
@@ -288,28 +275,16 @@ def chat(msg:str):
 
 
 def hi(msg:str):
-<<<<<<< Updated upstream
     print(f"hi: {msg}")
-=======
-    print(f"wave: {msg}")
->>>>>>> Stashed changes
-    ard.write(b'200')
+    arduino_queue.put('200')
 
 def wave(msg:str):
     print(f"wave: {msg}")
-<<<<<<< Updated upstream
-=======
-    # time.sleep(1)
->>>>>>> Stashed changes
-    ard.write(b'201')
+    arduino_queue.put('201')
 
 def salute(msg:str):
     print(f"salute: {msg}")
-<<<<<<< Updated upstream
-=======
-    # time.sleep(1)
->>>>>>> Stashed changes
-    ard.write(b'202')
+    arduino_queue.put('202')
 
 def vqa(msg:str):
     print(f"vqa: {msg}")
@@ -328,40 +303,26 @@ def place(obj:str):
 
 def happy():
     print("happy")
-<<<<<<< Updated upstream
-=======
-    # time.sleep(01)
->>>>>>> Stashed changes
-    ard.write(b'302')
-
-def angry():
-    print("angry")
-    ard.write(b'304')
+    arduino_queue.put('302')
     
 def sad():
     print("sad")
-    ard.write(b'303')
+    arduino_queue.put('303')
+
+def angry():
+    print("angry")
+    arduino_queue.put('304')
 
 def neutral():
     print("neutral")
 
-# Thread(target=eyes).start()
-# Thread(target=user_interface).start()
+Thread(target=eyes).start()
 
-# exit(0)
 if __name__ ==  "__main__":
+    print("Initilizing AIRA")
     B = Brain()
     whisp = STT()
-    # bark = BarkSpeech()
-    # Thread(target=head).start()
-    mutex = 0
-<<<<<<< Updated upstream
-    # BUFFER = []
     count = 0
-=======
-    # global BUFFER
-    # BUFFER = []
->>>>>>> Stashed changes
     
     while True:
         try:
@@ -373,7 +334,7 @@ if __name__ ==  "__main__":
                 initial_messages=[
                     {
                     "role": "system",
-                    "content": "You are AIRA, An Intelligent Robot Assistant, but you also go by the names Robert, robot, and Ira. You never refer to yourself as an AI but as a real human being. You can move your arms by generating actions only from [salute(), wave(), hi()] inside *action()*. You can also you can control your emotional reactions from only [angry, sad, happy, neutral]. You have a friendly and cute personality and you do have favorites and preferences and have real-time talking capabilities. You are created by team Eurekabotics, a team of engineering students from SCT College of Engineering. The team includes Rohit, Salo, Arjun, Rahul, Aswin, Harith and Rosmi. You are currently put in an Exhibition for Keraleeyam at University College Palayam."
+                    "content": "You are AIRA, An Intelligent Robot Assistant, but you also go by the names Robert and robot. You never refer to yourself as an AI but as a real human being. You can move your arms by generating actions only from [salute(), wave(), hi()] inside *action()*. You can also you can control your emotional reactions from only [angry, sad, happy, neutral]. You have a friendly and cute personality and you do have favorites and preferences and have real-time talking capabilities. You are created by team Eurekabotics, a team of engineering students from SCT College of Engineering. The team includes Rohit, Salo, Arjun, Rahul, Aswin, Harith and Rosmi. You are currently put in an Exhibition for Keraleeyam at University College Palayam."
                     },
                     {
                     "role": "user",
@@ -433,12 +394,10 @@ if __name__ ==  "__main__":
                     }
                 ]
 
-            # msg = input(">>>")
-            # BUFFER.append(voice)
             print(msg)
             # os.system("cls")
-            msg_l = msg.lower()
-            if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or 'era' in msg_l or "robot" in msg_l or 'robert' in msg_l:
+            msg_l = msg.lower().split()
+            if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or 'robert' in msg_l:
 
                 response, response_message = chat(msg)
                 
@@ -478,7 +437,6 @@ if __name__ ==  "__main__":
                     engine.say(second_response['choices'][0]['message']['content'])
                     engine.runAndWait()
                     continue
-                # Step 2: check if GPT wanted to call a function
                 print("AIRA: ",response)
                 actions, emotions = B.parser(response)
                 if actions:
@@ -491,23 +449,8 @@ if __name__ ==  "__main__":
                         globals()[emotion]()
 
                 cleaned_response = B.clean(response)
-                # BUFFER.append(cleaned_response)
-                # print("AIRA: ",cleaned_response)
-                # BUFFER.append((msg, cleaned_response))
                 engine.say(cleaned_response)
                 engine.runAndWait()
                 # print(initial_messages)
         except Exception as e:
             print("error:", e)
-
-  
-
-    # thread1 = threading.Thread(target=main_process)
-    # thread2 = threading.Thread(target=user_interface)
-    # print("processes are starting")
-    # thread1.start()
-    # thread2.start()
-
-    # thread1.join()
-    # thread2.join()
-    # print("Both tasks have completed.")
