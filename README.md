@@ -5,6 +5,7 @@ AIRA is a groundbreaking AI-powered humanoid robot designed to revolutionize hum
 <p align="center">
  <img src="./Images/group-pic.jpg" height="400" width="400">
 </p>
+
 ### Features
 AI-powered Conversations
 AIRA elevates human-robot interaction to a new dimension with cutting-edge Text-to-Speech and Speech-to-Text technologies, driven by the ever-evolving AI capabilities.
@@ -30,4 +31,3 @@ Aira's capacity to learn from experience ensures its continuous growth and refin
  - Add GUI
  - Website and Team card
  - Head control with commands
-
