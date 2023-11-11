@@ -1,4 +1,0 @@
-{
-    "sketch": "Arduino\\motor_control_ino\\motor_control_ino.ino",
-    "board": "arduino:avr:uno"
-}
