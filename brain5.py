@@ -1,5 +1,3 @@
-import os
-from WeatherAPI import *
 import json
 import re
 import openai
@@ -10,18 +8,19 @@ import mediapipe as mp
 import threading
 import queue
 import time
-import sys
-# from AIRASpeech import BarkSpeech
-from serial import Serial
 from WeatherAPI import *
+from serial import Serial
 
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
 openai.api_key = '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'
+
+#arduino related
+baudrate = 921600
 arduino_queue = queue.Queue()
 ard = None
-ard = Serial("COM3", 921600)
+ard = Serial("COM3", baudrate)
 
 def ard_comm(arduino_queue):
     global ard

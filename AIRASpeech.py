@@ -2,12 +2,7 @@ from typing import Any
 from transformers import AutoProcessor, AutoModel
 import scipy
 import torch
-# import time
 import pygame
-
-
-# Replace 'path/to/audio/file.mp3' with the path to your audio file
-
 
 class BarkSpeech():
 

@@ -3,13 +3,21 @@ from pyaudio import PyAudio,paInt16
 import whisper
 import audioop  
 
+silence_thresh = 8000
+max_duration = 60
+
+#1 : For debug mode / 0 : For production mode
+debug_mode = 0 
+#1 : For printing listen / 0 : For not printing listen
+listen_mode = 0
+
 class STT:
-<<<<<<< Updated upstream
-    def __init__(self, model_name='small.en', max_silence_seconds=2, silence_threshold=8000, chunk=1024, sample_format=paInt16, channels=1, fs=16000, max_seconds=60):
-=======
-    def __init__(self, model_name='small.en', max_silence_seconds=2, silence_threshold=5000, chunk=1024, sample_format=paInt16, channels=1, fs=16000, max_seconds=60):
->>>>>>> Stashed changes
-        print('Loading model')
+    def __init__(self, model_name='small.en', max_silence_seconds=2, 
+                 silence_threshold=silence_thresh, chunk=1024, 
+                 sample_format=paInt16, channels=1, fs=16000, 
+                 max_seconds=max_duration):
+        
+        print('Initalizing Ears')
         self.model = whisper.load_model(model_name)
         self.chunk = chunk 
         self.sample_format = sample_format
@@ -19,17 +27,11 @@ class STT:
         self.silence_threshold = silence_threshold
         self.max_silence_seconds = max_silence_seconds
         self.p = PyAudio()
-        # self.stream = self.p.open(format=self.sample_format,
-        #             channels=self.channels,
-        #             rate=self.fs,
-        #             frames_per_buffer=self.chunk,
-        #             input=True)
         self.stream = None
-    def listen(self):
-        '''
-        If it is all zeros, it means that you have to calibrate the silence_threshold to a higher value.
-        '''
 
+    def listen(self):
+        #If it is all zeros, it means that you have to calibrate the silence_threshold to a higher value.
+    
         frames = []
         self.p = PyAudio()
         self.stream = self.p.open(format=self.sample_format,
@@ -38,7 +40,7 @@ class STT:
                     frames_per_buffer=self.chunk,
                     input=True)
 
-        print("Recording...")
+        print("Listening...")
         ct = 0
         while True:
             data = self.stream.read(self.chunk)
@@ -49,10 +51,14 @@ class STT:
                 ct += 1
             else:
                 ct = 0
-            # print(ct)
+            
+            if debug_mode:
+                print(f'Threshold: {rms}')
+            if listen_mode:
+                print(f'Hearing: {ct}')
+
             if ct == 16*self.max_silence_seconds:
                 break
-
             if len(frames) * self.chunk / self.fs > self.max_seconds:
                 break
 
@@ -60,7 +66,6 @@ class STT:
         self.stream.close()
         print("Recording completed.")
         return frames
-
 
     def transcribe(self, frames):
         audio_data = frombuffer(b''.join(frames), dtype=int16)
@@ -79,17 +84,14 @@ class TTS:
         engine.runAndWait()
         engine.stop()
 
-
 if __name__ == '__main__':
     
     obj = STT()
-
     while True:
-
-        voice = obj.listen()
-        ans = obj.transcribe(voice)
-        print(ans)
-
-    # obj = TTS()
-    # obj.speak(ans)
+        try:
+            voice = obj.listen()
+            ans = obj.transcribe(voice)
+            print(ans)
+        except KeyboardInterrupt:
+            break
 

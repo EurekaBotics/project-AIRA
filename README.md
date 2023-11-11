@@ -17,16 +17,14 @@ Aira incorporates face recognition, creating a more personalized and human-like 
 Aira's capacity to learn from experience ensures its continuous growth and refinement, guaranteeing an ever-improving performance and user experience.
  -->
 
-
 # Roadmap
- - Add info about karealeeyam
- - Team details updating 
+ - VQA - blip
+ - Baby Protocol
+ - Natural Conversation - bark
  - Real time data access
    - Location access
-   - Weather update
    - Time and date
  - Add GUI
  - Website and Team card
  - Head control with commands
 
-Fuck You

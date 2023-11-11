@@ -4,14 +4,33 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
+/*
+Arduino Pin Connection - Emotions from Torso to head
+  lookright => 2 - 6
+  lookleft => 4 - 7
+  happy => 5 - 8
+  angry => 6 - 10
+  sad => 7 - 9
+*/
+
 //OLED
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-#define OLED_RESET    -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_WIDTH 128 
+#define SCREEN_HEIGHT 64 
+#define OLED_RESET    -1 
+
+//Sensor
+#define RIGHT A2
+#define LEFT A3
+
+int angle=90;
+int t = 0.1;
+int p1 = 6;
+int p2 = 7;
+int p3 = 8;
+int p4 = 9;
+int p5 = 10;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-
 
 // 'CLOSE', 128x64px
 const unsigned char closed_eye [] PROGMEM = {
@@ -80,6 +99,7 @@ const unsigned char closed_eye [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
+
 // 'LEFT', 128x64px
 const unsigned char leftLooking [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -147,6 +167,7 @@ const unsigned char leftLooking [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
+
 // 'OPEN', 128x64px
 const unsigned char opened_eye [] PROGMEM = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -214,6 +235,7 @@ const unsigned char opened_eye [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
+
 // 'RIGHT', 128x64px
 const unsigned char rightLooking [] PROGMEM = {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -281,6 +303,7 @@ const unsigned char rightLooking [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
+
 // 'SEMI', 128x64px
 const unsigned char semiopened_eye [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -348,9 +371,6 @@ const unsigned char semiopened_eye [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-
-
-
 
 // 'angry_emot', 128x64px
 const unsigned char angry_emot [] PROGMEM = {
@@ -420,8 +440,6 @@ const unsigned char angry_emot [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-
-
 // 'happy_emot', 128x64px
 const unsigned char happy_emot [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -490,10 +508,8 @@ const unsigned char happy_emot [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-
 // 'sad_emot', 129x62px
 const unsigned char sad_emot [] PROGMEM = {
-
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7f, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -560,95 +576,88 @@ const unsigned char sad_emot [] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-
-
 void display_JF(){
-for(int temp=0;temp<2;temp++)
-{
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(40,15);  
-  display.println("AIRA");
-  display.display();
+  for(int temp=0;temp<2;temp++){
+      display.clearDisplay();
+      display.setTextSize(2);
+      display.setTextColor(WHITE);
+      display.setCursor(40,15);  
+      display.println("AIRA");
+      display.display();
 
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(27,35);  
-  display.println("7-MUSKETEERS");
-  display.display();
-  delay(500);
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(40,15);  
-  display.println("AIRA.");
-  display.display();
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.setCursor(27,35);  
+      display.println("7-MUSKETEERS");
+      display.display();
+      delay(500);
 
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(27,35);  
-  display.println("7-MUSKETEERS");
-  display.display();
-  delay(500);
+      display.clearDisplay();
+      display.setTextSize(2);
+      display.setTextColor(WHITE);
+      display.setCursor(40,15);  
+      display.println("AIRA.");
+      display.display();
 
-display.clearDisplay();
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(40,15);  
-  display.println("AIRA..");
-  display.display();
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.setCursor(27,35);  
+      display.println("7-MUSKETEERS");
+      display.display();
+      delay(500);
 
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(27,35);  
-  display.println("7-MUSKETEERS");
-  display.display();
-  delay(500);
+      display.clearDisplay();
+      display.setTextSize(2);
+      display.setTextColor(WHITE);
+      display.setCursor(40,15);  
+      display.println("AIRA..");
+      display.display();
 
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(40,15);  
-  display.println("AIRA...");
-  display.display();
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.setCursor(27,35);  
+      display.println("7-MUSKETEERS");
+      display.display();
+      delay(500);
 
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(27,35);  
-  display.println("7-MUSKETEERS");
-  display.display();
-  delay(500);
-}
-}
+      display.clearDisplay();
+      display.setTextSize(2);
+      display.setTextColor(WHITE);
+      display.setCursor(40,15);  
+      display.println("AIRA...");
+      display.display();
 
-void happy()
-{
-  display.clearDisplay();
-  display.drawBitmap(0,0,happy_emot,128,64,WHITE);
-  display.display();
-  delay(1500);
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.setCursor(27,35);  
+      display.println("7-MUSKETEERS");
+      display.display();
+      delay(500);
+  }
 }
 
-void sad()
-{
-  display.clearDisplay();
-  display.drawBitmap(0,0,sad_emot,128,64,WHITE);
-  display.display();
-  delay(1500);
+void happy() {
+    display.clearDisplay();
+    display.drawBitmap(0,0,happy_emot,128,64,WHITE);
+    display.display();
+    delay(1500);
 }
 
-void angry()
-{
-  display.clearDisplay();
-  display.drawBitmap(0,0,angry_emot,128,64,WHITE);
-  display.display();
-  delay(1500);
+void sad() {
+    display.clearDisplay();
+    display.drawBitmap(0,0,sad_emot,128,64,WHITE);
+    display.display();
+    delay(1500);
 }
 
+void angry() {
+    display.clearDisplay();
+    display.drawBitmap(0,0,angry_emot,128,64,WHITE);
+    display.display();
+    delay(1500);
+}
 
-
-void blink_eye(){
+void blink_eye() {
   display.clearDisplay();
   display.drawBitmap(0,0,opened_eye,128,64,WHITE);
   display.display();
@@ -671,7 +680,7 @@ void blink_eye(){
   delay(1500);
 }
 
-void lookleft(){
+void lookleft() {
   display.clearDisplay();
   display.drawBitmap(0,0,opened_eye,128,64,WHITE);
   display.display();
@@ -694,7 +703,7 @@ void lookleft(){
   display.display();
 }
 
-void lookright(){
+void lookright() {
   display.clearDisplay();
   display.drawBitmap(0,0,opened_eye,128,64,WHITE);
   display.display();
@@ -717,7 +726,7 @@ void lookright(){
   display.display();
 }
 
-void eyeMoves(){
+void eyeMoves() {
   blink_eye();
   lookright();
   lookright();
@@ -729,74 +738,48 @@ void eyeMoves(){
   lookleft();
 }
 
-//Sensor
-#define RIGHT A2
-#define LEFT A3
-
-
-int angle=90;
-int t = 0.1;
-
-int p1 = 6;
-int p2 = 7;
-int p3 = 8;
-int p4 = 9;
-int p5 = 10;
-
 void setup() {
-  // put your setup code here, to run once:
+
   pinMode(p1,INPUT);
   pinMode(p2,INPUT);
-
   pinMode(p3,INPUT);
   pinMode(p4,INPUT);
-
   pinMode(p5,INPUT);
   
   Serial.begin(9600);
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
       Serial.println(F("SSD1306 allocation failed"));
-    }
+  }
   display.clearDisplay();
   display_JF();
   eyeMoves();
+
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-int val1 = digitalRead(p1);
-int val2 = digitalRead(p2);
-int val3 = digitalRead(p3);
-int val4 = digitalRead(p4);
-int val5 = digitalRead(p5);
 
-//int p1 = 6;
-//int p2 = 7;
-//int p3 = 8;
-//int p4 = 9;
-//int p5 = 10;
+    int val1 = digitalRead(p1);
+    int val2 = digitalRead(p2);
+    int val3 = digitalRead(p3);
+    int val4 = digitalRead(p4);
+    int val5 = digitalRead(p5);
 
-Serial.println(val1);
-if(val1 == 1)
-{
-  lookright();
-}
-else if(val2 == 1)
-{
-  lookleft();
-}
-else if(val3==1)
-{
-  happy();
-}
-else if(val4==1)
-{
-  sad();
-}
-else if(val5==1)
-{
-  angry();
-}
+    Serial.println(val1);
+    if(val1 == 1) {
+      lookright();
+    }
+    else if(val2 == 1) {
+      lookleft();
+    }
+    else if(val3==1) {
+      happy();
+    }
+    else if(val4==1) {
+      sad();
+    }
+    else if(val5==1) {
+      angry();
+    }
 
-blink_eye();
+    blink_eye();
 }
