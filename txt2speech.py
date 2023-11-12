@@ -16,8 +16,8 @@ class STT:
                  silence_threshold=silence_thresh, chunk=1024, 
                  sample_format=paInt16, channels=1, fs=16000, 
                  max_seconds=max_duration):
-        
-        print('Initalizing Ears')
+        if debug_mode:
+            print('Initalizing Ears')
         self.model = whisper.load_model(model_name)
         self.chunk = chunk 
         self.sample_format = sample_format

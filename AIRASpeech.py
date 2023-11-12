@@ -11,7 +11,6 @@ class BarkSpeech():
         self.model = AutoModel.from_pretrained("suno/bark-small")        
         self.model = self.model.cuda()
         self.model =  self.model.to_bettertransformer()
-        # self.model = self.model.to_bettertransformers()
 
         pygame.init()
 

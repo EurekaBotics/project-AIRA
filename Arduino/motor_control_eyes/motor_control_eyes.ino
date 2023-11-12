@@ -3,6 +3,11 @@
 #define SERVOMIN 150
 #define SERVOMAX 600
 
+const byte numChars = 12;
+int receivedChars[numChars]; // an array to store the received data
+
+boolean newData = false;
+
 /*
 Arduino Pin Connection - Torso
   3 - Head
@@ -41,7 +46,7 @@ int t = 2000;
 
 void setup() {
 
-    Serial.begin(115200);
+    Serial.begin(9600);
 
     pinMode(lookright, OUTPUT);
     pinMode(lookleft, OUTPUT);
@@ -57,56 +62,94 @@ void setup() {
 
 void loop() {
   
-  if(Serial.available() > 0) {  
+  read();
+  process();
 
-      int command = Serial.parseInt();
-      digitalWrite(sad, LOW);
-      digitalWrite(lookleft, LOW);
-      digitalWrite(lookright, LOW);
-      digitalWrite(angry, LOW);
-      digitalWrite(happy, LOW);
-      int angle = command;
-      Serial.println(command);
+}
 
-      if (angle >0 && angle < 180) {              
-          int pulse = map(angle, 0, 180, SERVOMIN, SERVOMAX);
-          myServo.setPWM(head, 0, pulse);
-          Serial.print("Head servo set to angle: ");
-          Serial.println(angle);
+void read() {
+
+  static byte ndx = 0;
+  char endMarker = '\n';
+  int command;
+
+  while(Serial.available() > 0 && newData == false) {
+
+      command = Serial.read();
+
+      if (command != endMarker) {
+          receivedChars[ndx] = command;
+          ndx++;
+          if (ndx >= numChars) {
+              ndx = numChars - 1;
+          }
       }
-      //Arm motions
-      else if(angle == 200){
-          hi();
-      }
-      else if(angle == 201){
-          wave();
-      }
-      else if(angle == 202){
-          salute();
-      }
-      //Emotions
-      else if(angle == 300){
-          digitalWrite(lookright, HIGH);  
-          delay(t);
-      }
-      else if(angle == 301){
-          digitalWrite(lookleft, HIGH);
-          delay(t);
-      }
-      else if(angle == 302){
-          digitalWrite(happy, HIGH);
-          delay(t);
-      }
-      else if(angle == 303){
-          digitalWrite(sad, HIGH);
-          delay(t);
-      }
-      else if(angle == 304){
-          digitalWrite(angry, HIGH);
-          delay(t);
+      else {
+          receivedChars[ndx] = '\0';
+          ndx = 0;
+          newData = true;
       }
   }
+
 }
+
+void process() {
+
+  if (newData == true) {
+    digitalWrite(sad, LOW);
+    digitalWrite(lookleft, LOW);
+    digitalWrite(lookright, LOW);
+    digitalWrite(angry, LOW);
+    digitalWrite(happy, LOW);
+    int angle = 0;
+
+    for (int i = 0; i < numChars && receivedChars[i] != '\0'; i++) {
+        angle = angle * 10 + (receivedChars[i] - '0');
+    }
+    Serial.println(angle);
+
+    if (angle > 0 && angle < 180) {              
+        int pulse = map(angle, 0, 180, SERVOMIN, SERVOMAX);
+        myServo.setPWM(head, 0, pulse);
+        delay(10);
+        Serial.print("Head servo set to angle: ");
+        Serial.println(angle);
+    }
+    //Arm motions
+    else if(angle == 200){
+        hi();
+    }
+    else if(angle == 201){
+        wave();
+    }
+    else if(angle == 202){
+        salute();
+    }
+    //Emotions
+    else if(angle == 300){
+        digitalWrite(lookright, HIGH);  
+        delay(t);
+    }
+    else if(angle == 301){
+        digitalWrite(lookleft, HIGH);
+        delay(t);
+    }
+    else if(angle == 302){
+        digitalWrite(happy, HIGH);
+        delay(t);
+    }
+    else if(angle == 303){
+        digitalWrite(sad, HIGH);
+        delay(t);
+    }
+    else if(angle == 304){
+        digitalWrite(angry, HIGH);
+        delay(t);
+    }
+    newData = false;
+  }
+}
+
 
 void wave() {
     int angle_90 = map(90, 0, 180, SERVOMIN, SERVOMAX);

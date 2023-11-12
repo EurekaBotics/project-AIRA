@@ -3,7 +3,7 @@
 AIRA is a groundbreaking AI-powered humanoid robot designed to revolutionize human-robot interaction. With advanced natural language processing, it effortlessly understands and responds to your commands. Its self-automation capabilities make it invaluable in various applications. AIRA is not just a robot; it's a new way to experience automation, companionship, and assistance, offering limitless possibilities for enhancing your daily life and diverse industries.
 
 <p align="center">
- <img src="./Images/group-pic.jpg" height="400" width="400">
+ <img src="./images/group-pic.jpg" height="400" width="400">
 </p>
 
 ### Features
