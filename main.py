@@ -25,7 +25,6 @@ disable_camera = 1 #Disables camera if 1
 #arduino related
 baudrate = 9600
 arduino_queue = queue.Queue()
-ard = Serial("COM3", baudrate)
 disable_arduino = 1 #Disables arduino if 1
 arduino_debug = 0 #Prints the content of queue if 1
 
@@ -42,10 +41,10 @@ def ard_comm(arduino_queue):
             ard.write(code.encode())
             
     else:
-        pass
-        # print('ard not defined')
+        print('ard not defined')
 
 if not disable_arduino:
+    ard = Serial("COM3", baudrate)
     arduino_Thread = threading.Thread(target=ard_comm, args=(arduino_queue,), daemon=True)
     arduino_Thread.start()
 
