@@ -42,8 +42,10 @@ def ard_comm(arduino_queue):
             
     else:
         print('ard not defined')
+        print('ard not defined')
 
 if not disable_arduino:
+    ard = Serial("COM3", baudrate)
     ard = Serial("COM3", baudrate)
     arduino_Thread = threading.Thread(target=ard_comm, args=(arduino_queue,), daemon=True)
     arduino_Thread.start()
