@@ -20,12 +20,13 @@ openai.api_key = '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'
 #camera realted
 cam = None
 debug_mode = 0 #Prints the camera angle if 1
+disable_camera = 1 #Disables camera if 1
 
 #arduino related
 baudrate = 9600
 arduino_queue = queue.Queue()
-ard = None
 ard = Serial("COM3", baudrate)
+disable_arduino = 1 #Disables arduino if 1
 arduino_debug = 0 #Prints the content of queue if 1
 
 def ard_comm(arduino_queue):
@@ -41,10 +42,12 @@ def ard_comm(arduino_queue):
             ard.write(code.encode())
             
     else:
-        print('ard not defined')
+        pass
+        # print('ard not defined')
 
-arduino_Thread = threading.Thread(target=ard_comm, args=(arduino_queue,), daemon=True)
-arduino_Thread.start()
+if not disable_arduino:
+    arduino_Thread = threading.Thread(target=ard_comm, args=(arduino_queue,), daemon=True)
+    arduino_Thread.start()
 
 class Brain():
 
@@ -258,8 +261,9 @@ def angry():
 def neutral():
     print("neutral")
 
-Thread = threading.Thread(target=eyes, daemon=True)
-Thread.start()
+if not disable_camera:
+    Thread = threading.Thread(target=eyes, daemon=True)
+    Thread.start()
 
 if __name__ ==  "__main__":
     print("Initilizing AIRA")
@@ -341,7 +345,6 @@ if __name__ ==  "__main__":
             # os.system("cls")
             msg_l = msg.lower()
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or 'robert' in msg_l:
-                print('wing')
                 response, response_message = chat(msg)
                 
                 if response_message.get('function_call'):
