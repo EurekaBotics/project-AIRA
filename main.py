@@ -2,12 +2,15 @@ import json
 import re
 import openai
 import pyttsx3
-from txt2speech import STT
 import cv2
 import mediapipe as mp
 import threading
 import queue
 import time
+import sys
+from txt2speech import STT
+from PyQt5.QtWidgets import QApplication
+from gui import FullScreenApp
 from WeatherAPI import *
 from serial import Serial
 from message import initial_messages
@@ -17,15 +20,27 @@ voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
 openai.api_key = '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'
 
+#Disable section
+disable_gui = 1 #Disables camera if 1
+disable_camera = 1 #Disables camera if 1
+disable_arduino = 1 #Disables arduino if 1
+
+#gui related
+window = None
+def run_gui():
+    global window
+    app = QApplication(sys.argv)
+    window = FullScreenApp()
+    window.showFullScreen()
+    sys.exit(app.exec_())
+
 #camera realted
 cam = None
 debug_mode = 0 #Prints the camera angle if 1
-disable_camera = 1 #Disables camera if 1
 
 #arduino related
 baudrate = 9600
 arduino_queue = queue.Queue()
-disable_arduino = 1 #Disables arduino if 1
 arduino_debug = 0 #Prints the content of queue if 1
 
 def ard_comm(arduino_queue):
@@ -41,6 +56,7 @@ def ard_comm(arduino_queue):
             ard.write(code.encode())
             
     else:
+        print('ard not defined')
         print('ard not defined')
 
 if not disable_arduino:
@@ -264,12 +280,15 @@ if not disable_camera:
     Thread = threading.Thread(target=eyes, daemon=True)
     Thread.start()
 
+if not disable_gui:
+    gui_thread = threading.Thread(target=run_gui , daemon=True)
+    gui_thread.start()
+
 if __name__ ==  "__main__":
     print("Initilizing AIRA")
     B = Brain()
     whisp = STT()
     count = 0
-    
     while True:
         try:
             voice = whisp.listen()
@@ -344,6 +363,7 @@ if __name__ ==  "__main__":
             # os.system("cls")
             msg_l = msg.lower()
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or 'robert' in msg_l:
+                window.text_simulation_thread.set_text_to_simulate(f'Human: {msg}')
                 response, response_message = chat(msg)
                 
                 if response_message.get('function_call'):
@@ -395,9 +415,10 @@ if __name__ ==  "__main__":
 
                 cleaned_response = B.clean(response)
                 engine.say(cleaned_response)
+                window.text_simulation_thread.set_text_to_simulate(f'AIRA: {cleaned_response}' + '\n')
                 engine.runAndWait()
-                # print(initial_messages)
         except KeyboardInterrupt:
+            gui_thread.join()
             break
         except Exception as e:
             print("error:", e)
