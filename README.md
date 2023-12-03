@@ -31,3 +31,5 @@ Aira's capacity to learn from experience ensures its continuous growth and refin
  - ~~Add GUI~~
  - Website and Team card
  - Head control with commands
+
+![AIRA](https://github.com/EurekaBotics/project-AIRA/assets/96014619/74f94667-0aa0-4249-ba34-08176db94b24)
