@@ -1,3 +1,4 @@
+'''Not used in main'''
 from typing import Any
 from transformers import AutoProcessor, AutoModel
 import scipy
