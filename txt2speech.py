@@ -6,9 +6,12 @@ import audioop
 silence_thresh = 250
 max_duration = 60
 
-#1 : For debug mode / 0 : For production mode
+# 1 : For debug mode 
+# 0 : For production mode
 debug_mode = 0
-#1 : For printing listen / 0 : For not printing listen
+
+# 1 : For printing listen 
+# 0 : For not printing listen
 listen_mode = 0
 
 class STT:
