@@ -20,12 +20,12 @@ voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
 openai.api_key = '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'
 
-#Disable section
-disable_gui = 1 #Disables camera if 1
+# Disable section
+disable_gui = 1 #Disables GUI if 1
 disable_camera = 1 #Disables camera if 1
 disable_arduino = 1 #Disables arduino if 1
 
-#gui related
+# gui related
 window = None
 def run_gui():
     global window
