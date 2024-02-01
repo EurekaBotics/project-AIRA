@@ -9,7 +9,7 @@ class TextSimulationThread(QThread):
 
     def __init__(self, parent=None):
         super(TextSimulationThread, self).__init__(parent)
-        self.text_to_simulate = ['I\'m all ears']  # Add your text here
+        self.text_to_simulate = ['I\'m all ears'] 
 
     def set_text_to_simulate(self, new_text):
         self.text_to_simulate.append(new_text)
