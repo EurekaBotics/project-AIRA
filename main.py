@@ -14,6 +14,7 @@ from gui import FullScreenApp
 from WeatherAPI import *
 from serial import Serial
 from message import initial_messages
+import sys
 
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
@@ -285,7 +286,16 @@ if not disable_gui:
     gui_thread.start()
 
 if __name__ ==  "__main__":
-    print("Initilizing AIRA")
+
+    if sys.platform.startswith('linux'):
+        print("Initilizing AIRA in Linux Env")
+    elif sys.platform.startswith('win'):
+        print("Initilizing AIRA in Windows")
+    elif sys.platform.startswith('macOS'):
+        print("Initilizing AIRA in mac")
+    else:
+        print("Initilizing AIRA in Unknown OS")
+        
     B = Brain()
     whisp = STT()
     count = 0

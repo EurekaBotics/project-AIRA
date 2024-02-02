@@ -1,21 +1,23 @@
+'''
+If listen mode listen_mode out zeros, you need to adjust(lower) the silence threshold '''
+
 from numpy import frombuffer, int16
 from pyaudio import PyAudio,paInt16
 import whisper
 import audioop  
 
-silence_thresh = 250
-max_duration = 60
+# Parameters to calibrate
+silence_thresh = 700 # Adjusts the volume level to be considered 'silent'.
+max_duration = 60 # Max recording duration, regardless of everything else.
+max_silence_seconds = 2 # How much silence duration is to be considered 'done talking'
+model_name = 'small.en' # Whisper model
 
-# 1 : For debug mode 
-# 0 : For production mode
-debug_mode = 0
+debug_mode = False # Shows the voice threshold. Should be higher than silence threshold to detect
 
-# 1 : For printing listen 
-# 0 : For not printing listen
-listen_mode = 0
+listen_mode = True # Shows if AIRA is detecting the voice
 
 class STT:
-    def __init__(self, model_name='small.en', max_silence_seconds=2, 
+    def __init__(self, model_name=model_name, max_silence_seconds=max_silence_seconds, 
                  silence_threshold=silence_thresh, chunk=1024, 
                  sample_format=paInt16, channels=1, fs=16000, 
                  max_seconds=max_duration):
@@ -78,7 +80,7 @@ class STT:
         return result["text"]
 
 class TTS:
-    def speak(self, text,rate=170, volume=0.75):
+    def speak(self, text,rate=170, volume=1):
         import pyttsx3
         engine = pyttsx3.init()
         engine.setProperty('rate', rate) 
