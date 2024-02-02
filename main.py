@@ -88,6 +88,9 @@ class Brain():
         return params
 
     def parser(self, string:str):
+        '''
+        Finds if action or emotion is present in the AI's answer.
+        '''
         tokens=[]
         pattern=r'action\([^)]+\)'
         tokens = re.findall(pattern,string)
