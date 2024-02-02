@@ -1,0 +1,1 @@
+- put arduino fn in main and put it in a separate module and import

@@ -14,19 +14,20 @@ from gui import FullScreenApp
 from WeatherAPI import *
 from serial import Serial
 from message import initial_messages
-import sys
 
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
+
+# AI model
 openai.api_key = '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'
 
 # Disable section
-disable_gui = 1 #Disables GUI if 1
-disable_camera = 1 #Disables camera if 1
-disable_arduino = 1 #Disables arduino if 1
+disable_gui = True
+disable_camera = True
+disable_arduino = True
 
-# gui related
+# GUI related
 window = None
 def run_gui():
     global window
@@ -35,11 +36,11 @@ def run_gui():
     window.showFullScreen()
     sys.exit(app.exec_())
 
-#camera realted
+# Camera realted
 cam = None
-debug_mode = 0 #Prints the camera angle if 1
+debug_mode = False # Prints the camera angle
 
-#arduino related
+# Arduino related
 baudrate = 9600
 arduino_queue = queue.Queue()
 arduino_debug = 0 #Prints the content of queue if 1
@@ -61,7 +62,7 @@ def ard_comm(arduino_queue):
         print('ard not defined')
 
 if not disable_arduino:
-    ard = Serial("COM3", baudrate)
+    ard = Serial("COM3", baudrate) # Adjust if needed
     arduino_Thread = threading.Thread(target=ard_comm, args=(arduino_queue,), daemon=True)
     arduino_Thread.start()
 
@@ -144,7 +145,7 @@ functions = [
 ]
 
 def get_current_weather(location, unit="fahrenheit"):
-    """Get the current weather in a given location"""
+    """Get the current weather in the given location"""
 
     forecast = asyncio.run(getweather(location))
     weather_info = {
@@ -202,8 +203,10 @@ def eyes():
 
             if cv2.waitKey(1) == ord('q'):
                 break
+            
     except Exception as e:
         print(e)
+        
     finally:
         cv2.destroyAllWindows()
         cam.release()
@@ -370,7 +373,6 @@ if __name__ ==  "__main__":
                 ]
 
             print(f'Human: {msg}')
-            # os.system("cls")
             msg_l = msg.lower()
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or 'robert' in msg_l:
                 window.text_simulation_thread.set_text_to_simulate(f'Human: {msg}')
@@ -412,7 +414,9 @@ if __name__ ==  "__main__":
                     engine.say(second_response['choices'][0]['message']['content'])
                     engine.runAndWait()
                     continue
+                
                 print("AIRA: ",response)
+                
                 actions, emotions = B.parser(response)
                 if actions:
                     params = B.parse_parameter(actions)
@@ -427,8 +431,10 @@ if __name__ ==  "__main__":
                 engine.say(cleaned_response)
                 window.text_simulation_thread.set_text_to_simulate(f'AIRA: {cleaned_response}' + '\n')
                 engine.runAndWait()
+                
         except KeyboardInterrupt:
             gui_thread.join()
             break
+        
         except Exception as e:
             print("error:", e)
