@@ -12,4 +12,5 @@ if __name__ == '__main__':
   if os.name == 'nt':
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     
-  print(asyncio.run(getweather("New York"))) # New York? -_-
+  print(asyncio.run(getweather("Kerala"))) # New York? -_-
+  
