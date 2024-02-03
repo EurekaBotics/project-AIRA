@@ -1,3 +1,6 @@
+''' Here, we can write different prompts for AIRA to function in different characters - sarcastic, formal, funny, etc. according to the audience'''
+
+
 initial_messages=[
     {
       "role": "system",
