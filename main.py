@@ -331,7 +331,7 @@ if __name__ ==  "__main__":
                     },
                     {
                     "role": "assistant",
-                    "content": "My name is AIRA, which stands for \"Artificial Intelligence Robot Assistant\". What is your name?"
+                    "content": "My name is AIRA, which stands for \"Artificial Intelligence Robot Assistant\". It's amazing to interact with you."
                     },
                     {
                     "role": "user",
