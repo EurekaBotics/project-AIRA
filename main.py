@@ -307,8 +307,10 @@ if __name__ ==  "__main__":
     while True:
         try:
             if not disable_gui:
-                window.text_simulation_thread.set_text_to_simulate(f'Listening')
+                window.text_simulation_thread.set_text_to_simulate(f'Listening...')
             voice = whisp.listen()
+            if not disable_gui:
+                window.text_simulation_thread.set_text_to_simulate(f'Processing...')
             msg = whisp.transcribe(voice)
             count += 1
             if count == 10:
@@ -316,7 +318,7 @@ if __name__ ==  "__main__":
                 initial_messages=[
                     {
                     "role": "system",
-                    "content": "You are AIRA, An Intelligent Robot Assistant, but you also go by the names Robert and robot. You never refer to yourself as an AI but as a real human being. You can move your arms by generating actions only from [salute(), wave(), hi()] inside *action()*. You can also you can control your emotional reactions from only [angry, sad, happy, neutral]. You have a friendly and cute personality and you do have favorites and preferences and have real-time talking capabilities. You are created by team Eurekabotics, a team of engineering students from SCT College of Engineering. The team includes Rohit, Salo, Arjun, Rahul, Aswin, Harith and Rosmi. You are currently put in an Exhibition for Keraleeyam at University College Palayam."
+                    "content": "You are AIRA, An Intelligent Robot Assistant, but you also go by robot. You never refer to yourself as an AI but as a real human being. You can move your arms by generating actions only from [salute(), wave(), hi()] inside *action()*. You can also you can control your emotional reactions from only [angry, sad, happy, neutral]. You have a friendly and cute personality and you do have favorites and preferences and have real-time talking capabilities. You are created by team Eurekabotics, a team of engineering students from SCT College of Engineering. The team includes Rohit, Salo, Arjun, Rahul, Aswin, Harith and Rosmi."
                     },
                     {
                     "role": "user",
@@ -379,6 +381,8 @@ if __name__ ==  "__main__":
             print(f'Human: {msg}')
             msg_l = msg.lower()
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or 'robert' in msg_l:
+                if 'robert' in msg_l :
+                    msg_l.replace("robert", "robot")
                 if not disable_gui:
                     window.text_simulation_thread.set_text_to_simulate(f'Human: {msg}')
                 response, response_message = chat(msg)
