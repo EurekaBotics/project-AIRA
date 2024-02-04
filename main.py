@@ -23,7 +23,7 @@ engine.setProperty('voice', voices[1].id)
 openai.api_key = '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'
 
 # Disable section
-disable_gui = True
+disable_gui = False
 disable_camera = True
 disable_arduino = True
 
@@ -306,6 +306,8 @@ if __name__ ==  "__main__":
     count = 0
     while True:
         try:
+            if not disable_gui:
+                window.text_simulation_thread.set_text_to_simulate(f'Listening')
             voice = whisp.listen()
             msg = whisp.transcribe(voice)
             count += 1
