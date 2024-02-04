@@ -59,7 +59,6 @@ def ard_comm(arduino_queue):
             
     else:
         print('ard not defined')
-        print('ard not defined')
 
 if not disable_arduino:
     ard = Serial("COM3", baudrate) # Adjust if needed
@@ -378,7 +377,8 @@ if __name__ ==  "__main__":
             print(f'Human: {msg}')
             msg_l = msg.lower()
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or 'robert' in msg_l:
-                window.text_simulation_thread.set_text_to_simulate(f'Human: {msg}')
+                if not disable_gui:
+                    window.text_simulation_thread.set_text_to_simulate(f'Human: {msg}')
                 response, response_message = chat(msg)
                 
                 if response_message.get('function_call'):
@@ -432,7 +432,8 @@ if __name__ ==  "__main__":
 
                 cleaned_response = B.clean(response)
                 engine.say(cleaned_response)
-                window.text_simulation_thread.set_text_to_simulate(f'AIRA: {cleaned_response}' + '\n')
+                if not disable_gui:
+                    window.text_simulation_thread.set_text_to_simulate(f'AIRA: {cleaned_response}' + '\n')
                 engine.runAndWait()
                 
         except KeyboardInterrupt:
