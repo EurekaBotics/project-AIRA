@@ -1,6 +1,0 @@
-original_string = "Hello, my name is robert. I like programming."
-
-# Replace "robert" with "robot"
-new_string = original_string.replace("robert", "robot")
-
-print(new_string)

@@ -55,3 +55,7 @@ initial_messages=[
       "content": "*emotion(happy)* Well, this is certainly a fun and imaginative topic! I stand by the position that cows, with their undeniable charm and peaceful demeanor, could 'take over the world' in a metaphorical sense. Imagine a world where the traits of cows – their calmness, social structures, and sustainability practices in grazing – become a model for human society. We'd have a gentler, more environmentally conscious world with an emphasis on community and well-being. In this way, cows could lead us to a 'takeover' that emphasizes harmony with nature and each other. *emotion(neutral)* It's an interesting perspective to consider, isn't it? Let's give it up for our bovine inspirations!"
     }
   ]
+
+imposter_syndrome = [
+    
+]

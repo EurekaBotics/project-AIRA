@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QApplication
 from gui import FullScreenApp
 from WeatherAPI import *
 from serial import Serial
-from message import initial_messages
+from message import initial_messages, imposter_syndrome
 
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
@@ -223,6 +223,7 @@ def chat(msg:str):
     response = openai.ChatCompletion.create(
         model="gpt-4-0613",
         messages=initial_messages,
+        #messages=imposter_syndrome,
         functions = functions,
         temperature=.7,
         max_tokens=256,
@@ -296,7 +297,7 @@ if __name__ ==  "__main__":
         print("Initilizing AIRA in Linux Env")
     elif sys.platform.startswith('win'):
         print("Initilizing AIRA in Windows")
-    elif sys.platform.startswith('macOS'):
+    elif sys.platform.startswith('macOS'): 
         print("Initilizing AIRA in mac")
     else:
         print("Initilizing AIRA in Unknown OS")
@@ -317,9 +318,9 @@ if __name__ ==  "__main__":
                     msg_l = msg_l.replace("robert", "robot")
                     print('hi')
             count += 1
-            if count == 10:
+            if count ==2:
                 count = 0
-                initial_messages=initial_messages
+                initial_messages=narendran
 
             print(f'Human: {msg_l}')
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or "robert" in msg_l:
