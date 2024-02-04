@@ -23,7 +23,7 @@ engine.setProperty('voice', voices[1].id)
 openai.api_key = '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'
 
 # Disable section
-disable_gui = False
+disable_gui = True
 disable_camera = True
 disable_arduino = True
 
@@ -320,7 +320,7 @@ if __name__ ==  "__main__":
             count += 1
             if count ==2:
                 count = 0
-                initial_messages=narendran
+                initial_messages=initial_messages
 
             print(f'Human: {msg_l}')
             if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or "robert" in msg_l:
