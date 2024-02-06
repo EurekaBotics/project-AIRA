@@ -123,7 +123,7 @@ initial_messages=[
     },
     {
       "role": "user",
-      "content": "Tell me about SCT College, robot"
+      "content": "Hey robo, what is Triz Labs"
     },
     {
       "role": "assistant",
