@@ -7,7 +7,7 @@ import whisper
 import audioop  
 
 # Parameters to calibrate
-silence_thresh = 700 # Adjusts the volume level to be considered 'silent'.
+silence_thresh = 150 # Adjusts the volume level to be considered 'silent'.
 max_duration = 60 # Max recording duration, regardless of everything else.
 max_silence_seconds = 2 # How much silence duration is to be considered 'done talking'
 model_name = 'small.en' # Whisper model
