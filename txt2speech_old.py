@@ -14,7 +14,7 @@ model_name = 'small.en' # Whisper model
 
 debug_mode = False # Shows the voice threshold. Should be higher than silence threshold to detect
 
-listen_mode = True # Shows if AIRA is detecting the voice
+listen_mode = False # Shows if AIRA is detecting the voice
 
 class STT:
     def __init__(self, model_name=model_name, max_silence_seconds=max_silence_seconds, 
@@ -47,23 +47,15 @@ class STT:
 
         print("Listening...")
         ct = 0
-        above_threshold_detected = False
         while True:
             data = self.stream.read(self.chunk)
             frames.append(data)
             rms = audioop.rms(data, 2)
-            if not above_threshold_detected and rms < silence_thresh:
-                frames.pop()
-            
-            if rms > silence_thresh: 
-                above_threshold_detected = True
-                # print('Big boy')
 
-            if above_threshold_detected:
-                if rms < self.silence_threshold:
-                    ct += 1
-                else:
-                    ct = 0
+            if rms < self.silence_threshold:
+                ct += 1
+            else:
+                ct = 0
             
             if debug_mode:
                 print(f'Threshold: {rms}')
@@ -72,11 +64,9 @@ class STT:
 
             if ct == 16*self.max_silence_seconds:
                 break
-            # if len(frames) * self.chunk / self.fs > self.max_seconds:
-            #     break
-            
-        above_threshold_detected = False
-        
+            if len(frames) * self.chunk / self.fs > self.max_seconds:
+                break
+
         self.stream.stop_stream()
         self.stream.close()
         print("Recording completed.")

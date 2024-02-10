@@ -23,7 +23,7 @@ engine.setProperty('voice', voices[1].id)
 openai.api_key = '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'
 
 # Disable section
-disable_gui = True
+disable_gui = False
 disable_camera = True
 disable_arduino = True
 
@@ -323,7 +323,7 @@ if __name__ ==  "__main__":
                 initial_messages=initial_messages
 
             print(f'Human: {msg_l}')
-            if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or "robert" in msg_l:
+            if "ira" in msg_l or "aira" in msg_l or "ayra" in msg_l or "eira" in msg_l or "robot" in msg_l or "robert" in msg_l or "robo" in msg_l:
                 if not disable_gui:
                     window.text_simulation_thread.set_text_to_simulate(f'Human: {msg_l}')
                 response, response_message = chat(msg_l)

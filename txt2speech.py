@@ -7,7 +7,7 @@ import whisper
 import audioop  
 
 # Parameters to calibrate
-silence_thresh = 150 # Adjusts the volume level to be considered 'silent'.
+silence_thresh = 300 # Adjusts the volume level to be considered 'silent'.
 max_duration = 60 # Max recording duration, regardless of everything else.
 max_silence_seconds = 2 # How much silence duration is to be considered 'done talking'
 model_name = 'small.en' # Whisper model
@@ -47,15 +47,23 @@ class STT:
 
         print("Listening...")
         ct = 0
+        above_threshold_detected = False
         while True:
             data = self.stream.read(self.chunk)
             frames.append(data)
             rms = audioop.rms(data, 2)
+            if not above_threshold_detected and rms < silence_thresh:
+                frames.pop()
+            
+            if rms > silence_thresh: 
+                above_threshold_detected = True
+                # print('Big boy')
 
-            if rms < self.silence_threshold:
-                ct += 1
-            else:
-                ct = 0
+            if above_threshold_detected:
+                if rms < self.silence_threshold:
+                    ct += 1
+                else:
+                    ct = 0
             
             if debug_mode:
                 print(f'Threshold: {rms}')
@@ -64,9 +72,11 @@ class STT:
 
             if ct == 16*self.max_silence_seconds:
                 break
-            if len(frames) * self.chunk / self.fs > self.max_seconds:
-                break
-
+            # if len(frames) * self.chunk / self.fs > self.max_seconds:
+            #     break
+            
+        above_threshold_detected = False
+        
         self.stream.stop_stream()
         self.stream.close()
         print("Recording completed.")
