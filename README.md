@@ -27,7 +27,7 @@ Aira's capacity to learn from experience ensures its continuous growth and refin
  - Real-time data access
    - Location Access
    - Time and date
- - ~~Add GUI~~
+ - Add GUI
  - Website and Team card
  - Head control with commands
 
