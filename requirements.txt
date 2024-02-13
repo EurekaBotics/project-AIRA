@@ -3,7 +3,6 @@ numpy==1.26.4
 openai==0.28.1
 opencv_python==4.8.1.78
 opencv_python_headless==4.8.0.74
-pvporcupine==3.0.0
 PyAudio==0.2.13
 PyQt5==5.15.10
 pyserial==3.5
