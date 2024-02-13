@@ -14,13 +14,18 @@ from gui import FullScreenApp
 from WeatherAPI import *
 from serial import Serial
 from message import initial_messages, imposter_syndrome
+import configparser
+
+config = configparser.ConfigParser()
+config.read("config.ini")
+OPENAI_KEY = config.get('KEY','OPENAI_KEY')
 
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
 engine.setProperty('voice', voices[1].id)
 
 # AI model
-openai.api_key = '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'
+openai.api_key = OPENAI_KEY
 
 # Disable section
 disable_gui = False
