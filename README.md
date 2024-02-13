@@ -15,21 +15,12 @@ AIRA, equipped with advanced sensors and AI, can perceive its environment, compr
 
 
 ## Dependency installation
-
 ```
 pip3 install -r requirements.txt
 ```
+## API key setup
+Go to example_config.ini and add you openai API key there.
 
-# Roadmap
- - VQA - blip
- - Baby Protocol
- - Natural Conversation - bark
- - Real-time data access
-   - Location Access
-   - Time and date
- - Add GUI
- - Website and Team card
- - Head control with commands
 
 # AIRA's Evolution
 ![AIRA](Images/AIRA_evolution.png)
