@@ -1,15 +1,31 @@
 import sys
 import time
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QTextBrowser, QGraphicsOpacityEffect, QPushButton
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QVBoxLayout,
+    QWidget,
+    QTextBrowser,
+    QGraphicsOpacityEffect,
+    QPushButton,
+)
 from PyQt5.QtGui import QPixmap, QPalette, QBrush, QFont, QTextCursor, QColor
-from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QThread, pyqtSignal
+from PyQt5.QtCore import (
+    Qt,
+    QTimer,
+    QPropertyAnimation,
+    QEasingCurve,
+    QThread,
+    pyqtSignal,
+)
+
 
 class TextSimulationThread(QThread):
     text_generated = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super(TextSimulationThread, self).__init__(parent)
-        self.text_to_simulate = ['I\'m all ears'] 
+        self.text_to_simulate = ["I'm all ears"]
 
     def set_text_to_simulate(self, new_text):
         self.text_to_simulate.append(new_text)
@@ -23,16 +39,18 @@ class TextSimulationThread(QThread):
         while True:
             if not len(self.text_to_simulate):
                 time.sleep(1)
-                continue 
+                continue
 
             for text in self.text_to_simulate:
                 self.text_generated.emit(text)
                 self.msleep(1000)
                 self.remove_text()
 
+
 class FullScreenApp(QMainWindow):
 
     glassBoxVisible = pyqtSignal()
+
     def __init__(self):
         super().__init__()
         self.image_path = "./Images/background.png"
@@ -78,7 +96,7 @@ class FullScreenApp(QMainWindow):
         if background_image.isNull():
             print(f"Error: Unable to load the image from {self.image_path}")
             return
-        
+
         palette = QPalette()
         palette.setBrush(QPalette.Background, QBrush(background_image))
         self.setPalette(palette)
@@ -94,7 +112,9 @@ class FullScreenApp(QMainWindow):
 
         # Set the background color to black with transparency and rounded edges
         black_color = QColor(0, 0, 0)
-        black_color.setAlphaF(0.7)  # Adjust the alpha value for the desired transparency
+        black_color.setAlphaF(
+            0.7
+        )  # Adjust the alpha value for the desired transparency
         self.glass_box.setStyleSheet(
             f"background-color: {black_color.name()}; border-radius: 20px;"  # Adjust the radius as needed
         )
@@ -123,17 +143,23 @@ class FullScreenApp(QMainWindow):
 
     def setupToggleButton(self):
         self.toggle_button = QPushButton("Toggle Fullscreen", self.central_widget)
-        self.toggle_button.setStyleSheet("background: transparent; color: white; border: 1px solid white;")
+        self.toggle_button.setStyleSheet(
+            "background: transparent; color: white; border: 1px solid white;"
+        )
         self.toggle_button.clicked.connect(self.toggleFullscreen)
 
     def fadeIn(self):
         self.glass_box.show()
-        self.opacity_animation = QPropertyAnimation(self.glass_box.graphicsEffect(), b"opacity")
+        self.opacity_animation = QPropertyAnimation(
+            self.glass_box.graphicsEffect(), b"opacity"
+        )
         self.opacity_animation.setStartValue(0.0)
         self.opacity_animation.setEndValue(0.8)
         self.opacity_animation.setDuration(1000)
         self.opacity_animation.setEasingCurve(QEasingCurve.Linear)
-        self.opacity_animation.finished.connect(self.glassBoxVisible.emit)  # Emit the signal when the animation is complete
+        self.opacity_animation.finished.connect(
+            self.glassBoxVisible.emit
+        )  # Emit the signal when the animation is complete
         self.opacity_animation.start()
 
     def keyPressEvent(self, event):
@@ -173,7 +199,8 @@ class FullScreenApp(QMainWindow):
             # Connect the signal to the simulateText method to handle the case when the glass box becomes visible
             self.glassBoxVisible.connect(lambda: self.simulateText(text))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = FullScreenApp()
     window.showFullScreen()
