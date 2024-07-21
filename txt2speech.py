@@ -1,10 +1,12 @@
 """
 If listen mode listen_mode out zeros, you need to adjust(lower) the silence threshold """
-
 from numpy import frombuffer, int16
 from pyaudio import PyAudio, paInt16
 import whisper
 import audioop
+import wave
+from groq import Groq
+from config import groq_api
 
 # Parameters to calibrate
 silence_thresh = 300  # Adjusts the volume level to be considered 'silent'.
@@ -31,7 +33,8 @@ class STT:
     ):
         if debug_mode:
             print("Initalizing Ears")
-        self.model = whisper.load_model(model_name)
+        # self.model = whisper.load_model(model_name)
+        self.client = Groq(api_key=groq_api)
         self.chunk = chunk
         self.sample_format = sample_format
         self.channels = channels
@@ -93,11 +96,30 @@ class STT:
         return frames
 
     def transcribe(self, frames):
-        audio_data = frombuffer(b"".join(frames), dtype=int16)
-        audio_data = audio_data.astype("float32") / 32767.0
-        result = self.model.transcribe(audio_data)
-        self.p.terminate()
-        return result["text"]
+        # audio_data = frombuffer(b"".join(frames), dtype=int16)
+        # audio_data = audio_data.astype("float32") / 32767.0
+        # result = self.model.transcribe(audio_data)
+        # self.p.terminate()
+        cache_file = 'output.wav'
+        wf = wave.open(cache_file, 'wb')
+        wf.setnchannels(1)
+
+        wf.setsampwidth(2)
+        wf.setframerate(16000)
+        wf.writeframes(b''.join(frames))
+        wf.close()
+
+        with open(cache_file, "rb") as file:
+            transcription = self.client.audio.transcriptions.create(
+            file=(cache_file, file.read()),
+            model="whisper-large-v3",
+            # prompt="Specify context or spelling",  # Optional
+            response_format="json",  # Optional
+            language="en",  # Optional
+            
+            )
+
+        return transcription.text
 
 
 class TTS:
