@@ -34,7 +34,7 @@ disable_arduino = True
 
 # GUI related
 window = None
-
+#wot
 
 def run_gui():
     global window
