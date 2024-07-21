@@ -1,11 +1,10 @@
 """
 If listen mode listen_mode out zeros, you need to adjust(lower) the silence threshold """
-# test
 from numpy import frombuffer, int16
 from pyaudio import PyAudio, paInt16
 import whisper
 import audioop
-
+import wave
 # Parameters to calibrate
 silence_thresh = 300  # Adjusts the volume level to be considered 'silent'.
 max_duration = 60  # Max recording duration, regardless of everything else.
@@ -118,6 +117,12 @@ if __name__ == "__main__":
     while True:
         try:
             voice = obj.listen()
+            wf = wave.open('output.wav', 'wb')
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(44100)
+            wf.writeframes(b''.join(voice))
+            wf.close()
             ans = obj.transcribe(voice)
             print(ans)
         except KeyboardInterrupt:
