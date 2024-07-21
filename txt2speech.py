@@ -6,7 +6,8 @@ import whisper
 import audioop
 import wave
 from groq import Groq
-from config import groq_api
+import os
+groq_api =os.environ.get("GROQ_API_KEY")
 
 # Parameters to calibrate
 silence_thresh = 300  # Adjusts the volume level to be considered 'silent'.
