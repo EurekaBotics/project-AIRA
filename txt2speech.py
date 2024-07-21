@@ -1,6 +1,6 @@
 """
 If listen mode listen_mode out zeros, you need to adjust(lower) the silence threshold """
-
+# test
 from numpy import frombuffer, int16
 from pyaudio import PyAudio, paInt16
 import whisper
