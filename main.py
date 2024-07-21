@@ -1,6 +1,6 @@
 import json
 import re
-import openai
+# import openai
 import pyttsx3
 import cv2
 import mediapipe as mp
@@ -10,25 +10,29 @@ import time
 import sys
 from txt2speech import STT
 from PyQt5.QtWidgets import QApplication
+from groq import Groq
 from gui import FullScreenApp
 from WeatherAPI import *
 from serial import Serial
 from message import initial_messages, imposter_syndrome
 import configparser
 
-config = configparser.ConfigParser()
-config.read("config.ini")
-OPENAI_KEY = config.get("KEY", "OPENAI_KEY")
+# config = configparser.ConfigParser()
+# config.read("config.ini")
+# OPENAI_KEY = config.get("KEY", "OPENAI_KEY")
+client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY"),
+)
 
 engine = pyttsx3.Engine()
 voices = engine.getProperty("voices")
-engine.setProperty("voice", voices[1].id)
+engine.setProperty("voice", voices[0].id)
 
 # AI model
-openai.api_key = OPENAI_KEY
+# openai.api_key = OPENAI_KEY
 
 # Disable section
-disable_gui = False
+disable_gui = True
 disable_camera = True
 disable_arduino = True
 
@@ -248,25 +252,40 @@ def eyes():
         cam.release()
 
 
+# Openai
+# def chat(msg: str):
+#     global initial_messages
+#     initial_messages.append({"role": "user", "content": f"{msg}"})
+#     response = openai.ChatCompletion.create(
+#         model="gpt-4-0613",
+#         messages=initial_messages,
+#         # messages=imposter_syndrome,
+#         functions=functions,
+#         temperature=0.7,
+#         max_tokens=256,
+#         top_p=1,
+#         frequency_penalty=0,
+#         presence_penalty=0,
+#     )
+
+#     resp = response["choices"][0]["message"]["content"]
+
+#     initial_messages.append({"role": "assistant", "content": f"{resp}"})
+#     return resp, response["choices"][0]["message"]
+#     # print(f"chat: {msg}")
+
+
 def chat(msg: str):
     global initial_messages
     initial_messages.append({"role": "user", "content": f"{msg}"})
-    response = openai.ChatCompletion.create(
-        model="gpt-4-0613",
+    response = client.chat.completions.create(
         messages=initial_messages,
-        # messages=imposter_syndrome,
-        functions=functions,
-        temperature=0.7,
-        max_tokens=256,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0,
+        model="llama3-70b-8192",
     )
 
-    resp = response["choices"][0]["message"]["content"]
-
+    resp = response.choices[0].message.content
     initial_messages.append({"role": "assistant", "content": f"{resp}"})
-    return resp, response["choices"][0]["message"]
+    return resp, response.choices[0].message
     # print(f"chat: {msg}")
 
 
@@ -378,8 +397,8 @@ if __name__ == "__main__":
                         f"Human: {msg_l}"
                     )
                 response, response_message = chat(msg_l)
-
-                if response_message.get("function_call"):
+                
+                if response_message.function_call:
 
                     available_functions = {"get_current_weather": get_current_weather}
                     function_name = response_message["function_call"]["name"]
@@ -401,20 +420,25 @@ if __name__ == "__main__":
                             "content": function_response,
                         }
                     )
-                    second_response = openai.ChatCompletion.create(
-                        model="gpt-3.5-turbo-0613",
+                    # second_response = openai.ChatCompletion.create(
+                    #     model="gpt-3.5-turbo-0613",
+                    #     messages=initial_messages,
+                    # )
+
+                    second_response = client.chat.completions.create(
+                        model="llama3-8b-8192",
                         messages=initial_messages,
                     )
 
                     initial_messages.append(
                         {
                             "role": "assistant",
-                            "content": f"{second_response['choices'][0]['message']['content']}",
+                            "content": f"{second_response.choices[0].message.content}",
                         }
                     )
 
-                    print("AIRA: ", second_response["choices"][0]["message"]["content"])
-                    engine.say(second_response["choices"][0]["message"]["content"])
+                    print("AIRA: ", second_response.choices[0].message.content)
+                    engine.say(second_response.choices[0].message.content)
                     engine.runAndWait()
                     continue
 
