@@ -2,5 +2,6 @@ __pycache__
 .vscode
 config.ini
 .env
+venv
 config.py
 output.wav
