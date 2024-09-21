@@ -1,0 +1,13 @@
+
+- more emotions 
+- more actions
+- distil whisper
+- head stablising
+- object detection
+- face recognition
+- hotel integration 
+    - hotel data
+- memory
+- groq port  
+- 
+- 
