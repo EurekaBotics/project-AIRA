@@ -1,6 +1,8 @@
 
 - more emotions 
 - more actions
+    - point
+    - 
 - distil whisper
 - head stablising
 - object detection
@@ -8,6 +10,5 @@
 - hotel integration 
     - hotel data
 - memory
-- groq port  
-- 
+- fix weather api
 - 

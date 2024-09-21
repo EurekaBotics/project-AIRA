@@ -1,144 +1,12 @@
-"""
-If listen mode listen_mode out zeros, you need to adjust(lower) the silence threshold """
-from numpy import frombuffer, int16
-from pyaudio import PyAudio, paInt16
-import whisper
-import audioop
-import wave
-from groq import Groq
+import argparse
 import os
-from queue import Queue
 import speech_recognition as sr
-from sys import platform
-from time import sleep
 from datetime import datetime, timedelta
-groq_api =os.environ.get("GROQ_API_KEY")
-
-# Parameters to calibrate
-silence_thresh = 50  # Adjusts the volume level to be considered 'silent'.
-max_duration = 60  # Max recording duration, regardless of everything else.
-max_silence_seconds = 2  # How much silence duration is to be considered 'done talking'
-model_name = "small.en"  # Whisper model
-
-debug_mode = True  # Shows the voice threshold. Should be higher than silence threshold to detect
-
-listen_mode = True  # Shows if AIRA is detecting the voice
-
-
-class STT:
-    def __init__(
-        self,
-        model_name=model_name,
-        max_silence_seconds=max_silence_seconds,
-        silence_threshold=silence_thresh,
-        chunk=1024,
-        sample_format=paInt16,
-        channels=1,
-        fs=16000,
-        max_seconds=max_duration,
-    ):
-        if debug_mode:
-            print("Initalizing Ears")
-        # self.model = whisper.load_model(model_name)
-        self.client = Groq(api_key=groq_api)
-        self.chunk = chunk
-        self.sample_format = sample_format
-        self.channels = channels
-        self.fs = fs
-        self.max_seconds = max_seconds
-        self.silence_threshold = silence_threshold
-        self.max_silence_seconds = max_silence_seconds
-        self.p = PyAudio()
-        self.stream = None
-
-    def listen(self):
-        # If it is all zeros, it means that you have to calibrate the silence_threshold to a higher value.
-
-        frames = []
-        self.p = PyAudio()
-        self.stream = self.p.open(
-            format=self.sample_format,
-            channels=self.channels,
-            rate=self.fs,
-            frames_per_buffer=self.chunk,
-            input=True,
-        )
-
-        print("Listening...")
-        ct = 0
-        above_threshold_detected = False
-        while True:
-            data = self.stream.read(self.chunk)
-            frames.append(data)
-            rms = audioop.rms(data, 2)
-            if not above_threshold_detected and rms < silence_thresh:
-                frames.pop()
-
-            if rms > silence_thresh:
-                above_threshold_detected = True
-                # print('Big boy')
-
-            if above_threshold_detected:
-                if rms < self.silence_threshold:
-                    ct += 1
-                else:
-                    ct = 0
-
-            if debug_mode:
-                print(f"Threshold: {rms}")
-            if listen_mode:
-                print(f"Hearing: {ct}")
-
-            if ct == 16 * self.max_silence_seconds:
-                break
-            # if len(frames) * self.chunk / self.fs > self.max_seconds:
-            #     break
-
-        above_threshold_detected = False
-
-        self.stream.stop_stream()
-        self.stream.close()
-        print("Recording completed.")
-        return frames
-
-    def transcribe(self, frames):
-        # audio_data = frombuffer(b"".join(frames), dtype=int16)
-        # audio_data = audio_data.astype("float32") / 32767.0
-        # result = self.model.transcribe(audio_data)
-        # self.p.terminate()
-        cache_file = 'output.wav'
-        wf = wave.open(cache_file, 'wb')
-        wf.setnchannels(1)
-
-        wf.setsampwidth(2)
-        wf.setframerate(16000)
-        wf.writeframes(b''.join(frames))
-        wf.close()
-
-        with open(cache_file, "rb") as file:
-            transcription = self.client.audio.transcriptions.create(
-            file=(cache_file, file.read()),
-            model="whisper-large-v3",
-            # prompt="Specify context or spelling",  # Optional
-            response_format="json",  # Optional
-            language="en",  # Optional
-            
-            )
-
-        return transcription.text
-
-
-class TTS:
-    def speak(self, text, rate=170, volume=1):
-        import pyttsx3
-
-        engine = pyttsx3.init()
-        engine.setProperty("rate", rate)
-        engine.setProperty("volume", volume)
-        engine.say(text)
-        engine.runAndWait()
-        engine.stop()
-
+from queue import Queue
+from time import sleep
+from sys import platform
+from groq import Groq
+from print_color import print
 
 class RealTimeTranscription:
     def __init__(self, cache_file="temp_audio.wav", energy_threshold=1000, 
@@ -259,16 +127,22 @@ class RealTimeTranscription:
     def _print_transcription(self):
         print("\n\nFinal Transcription:")
         print("\n".join(self.transcription))
-
+        
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cache_file", default="temp_audio.wav", help="Temporary audio file name")
+    parser.add_argument("--energy_threshold", default=500, type=int)
+    parser.add_argument("--record_timeout", default=2.0, type=float)
+    parser.add_argument("--phrase_timeout", default=3.0, type=float)
+    parser.add_argument("--default_microphone", default='pulse' if 'linux' in platform else None, type=str)
 
-    obj = STT()
-    while True:
-        try:
-            voice = obj.listen()
-            ans = obj.transcribe(voice)
-            print(ans)
-        except KeyboardInterrupt:
-            break
+    args = parser.parse_args()
+
+    transcription = RealTimeTranscription(cache_file=args.cache_file,
+                                          energy_threshold=args.energy_threshold, 
+                                          record_timeout=args.record_timeout,
+                                          phrase_timeout=args.phrase_timeout,
+                                          default_microphone=args.default_microphone)
+    transcription.start_listening()
