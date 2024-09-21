@@ -16,10 +16,8 @@ from WeatherAPI import *
 from serial import Serial
 from message import initial_messages, imposter_syndrome
 import configparser
-
-# config = configparser.ConfigParser()
-# config.read("config.ini")
-# OPENAI_KEY = config.get("KEY", "OPENAI_KEY")
+from VQA import GeminiVisionModel
+from print_color import print
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
 )
@@ -100,7 +98,6 @@ class Brain:
 
             var = param[bracket1 + 1 : bracket2]
             params.append(var)
-        # print(params)
         return params
 
     def parser(self, string: str):
@@ -306,7 +303,8 @@ def salute(msg):
 
 def vqa(msg: str):
     print(f"vqa: {msg}")
-
+    vqa = GeminiVisionModel()
+    return vqa.perform_vqa(msg)
 
 def detect_obj(obj: str):
     print(f"detect_obj:{obj}")
@@ -337,7 +335,6 @@ def sad():
 def angry():
     print("angry")
     arduino_queue.put("304")
-
 
 def neutral():
     print("neutral")
@@ -445,17 +442,32 @@ if __name__ == "__main__":
                 print("AIRA: ", response)
 
                 actions, emotions = B.parser(response)
+                vqa_exists = False
                 if actions:
                     params = B.parse_parameter(actions)
-                    B(actions, params)
+                    vqa_pattern = re.compile(r"vqa\((.*?)\)")
+                    for action in actions:
+                        match = vqa_pattern.search(action)
+                        if match:
+                            vqa_exists = True
+                            vqa_query = match.group(1).strip("'\"")
+                            out = vqa(vqa_query)
+                            engine.say(out)
+                            engine.runAndWait()
+                            continue
+                    if not vqa_exists:
+                        B(actions, params) # this is a __call__ enabled function that does something that noone knows
+                        print(actions, color='red')
+
+
                 if emotions:
                     print(emotions)
                     for emotion in emotions:
                         print("emotion", emotion)
                         globals()[emotion]()
-
-                cleaned_response = B.clean(response)
-                engine.say(cleaned_response)
+                if not vqa_exists:
+                    cleaned_response = B.clean(response)
+                    engine.say(cleaned_response)
                 if not disable_gui:
                     window.text_simulation_thread.set_text_to_simulate(
                         f"AIRA: {cleaned_response}" + "\n"

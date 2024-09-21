@@ -21,7 +21,7 @@ import cv2
 # print(f"{result.text=}")
 
 
-class VisionModel:
+class GeminiVisionModel:
     def __init__(self) -> None:
         genai.configure(api_key=os.environ['GEMINI_API_KEY'])
         self.cap = cv2.VideoCapture(0) 
@@ -34,8 +34,15 @@ class VisionModel:
             cv2.imwrite('captured_image.jpg', frame)
         self.cap.release()
 
-    def perform_vqa(self, image_path='captured_image.jpg' ):
+    def perform_vqa(self, question, image_path='captured_image.jpg'):
+        self.take_image()
         myfile = genai.upload_file(image_path)
         result = self.model.generate_content(
-            [myfile, "\n\n", "what am i holding"])
-        return result
+            [myfile, "\n\n", question])
+        return result.text
+
+
+if __name__ == '__main__':
+    from VQA import GeminiVisionModel
+    vqa = GeminiVisionModel()
+    print(vqa.perform_vqa('what can you see in this image?'))
