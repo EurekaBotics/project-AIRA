@@ -453,6 +453,7 @@ if __name__ == "__main__":
                             vqa_query = match.group(1).strip("'\"")
                             out = vqa(vqa_query)
                             engine.say(out)
+                            print(out, color='red')
                             engine.runAndWait()
                             continue
                     if not vqa_exists:
