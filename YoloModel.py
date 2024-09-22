@@ -1,4 +1,5 @@
 import cv2
+from print_color import print
 from ultralytics import YOLO
 class CalcPriceYolo:
     def __init__(self) -> None:
@@ -58,20 +59,18 @@ class CalcPriceYolo:
         # Print the count of each item and the corresponding total price
         for item, count in item_counts.items():
             if count > 0:
-                print(f"{item.capitalize()} detected: {count}, Price: {count * item_prices[item]} Rs")
+                print(f"{item.capitalize()} detected: {count}, Price: {count * item_prices[item]} Rs",color='g')
 
         print(f"Total price for all items: {total_price} Rs")
+        return total_price
         # Visualize the results
-        annotated_image = results[0].plot()
+        # annotated_image = results[0].plot()
 
-        # Display the image with bounding boxes and scores
-        cv2.imshow("YOLOv8 Detection - First Frame", annotated_image)
+        # # Display the image with bounding boxes and scores
+        # cv2.imshow("YOLOv8 Detection - First Frame", annotated_image)
 
-        # Wait for a key press to close the window
-        cv2.waitKey(0)
-
-        # Close all OpenCV windows
-        cv2.destroyAllWindows()
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     yolo_obj = CalcPriceYolo()
