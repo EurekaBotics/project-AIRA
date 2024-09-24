@@ -1,0 +1,14 @@
+
+- more emotions 
+- more actions
+    - point
+    - 
+- distil whisper
+- head stablising
+- object detection
+- face recognition
+- hotel integration 
+    - hotel data
+- memory
+- fix weather api
+- 
