@@ -5,3 +5,4 @@ config.ini
 venv
 config.py
 output.wav
+myenv
