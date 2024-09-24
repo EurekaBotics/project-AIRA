@@ -34,7 +34,8 @@ uint8_t lookleft = 4;
 uint8_t happy = 5;
 uint8_t angry = 6;
 uint8_t sad = 7;
-
+uint8_t confused = 12;
+uint8_t surprise = 13;
 //Emotions
 uint8_t head = 3;
 uint8_t base_link = 8;
@@ -53,7 +54,8 @@ void setup() {
     pinMode(happy, OUTPUT);
     pinMode(sad, OUTPUT);
     pinMode(angry, OUTPUT);
-    
+    pinMode(confused, OUTPUT);
+    pinMode(surprise, OUTPUT);
     myServo.begin();
     myServo.setPWMFreq(60);
     delay(10);
@@ -101,6 +103,8 @@ void process() {
     digitalWrite(lookright, LOW);
     digitalWrite(angry, LOW);
     digitalWrite(happy, LOW);
+    digitalWrite(confused, LOW);
+    digitalWrite(surprise, LOW);
     int angle = 0;
 
     for (int i = 0; i < numChars && receivedChars[i] != '\0'; i++) {
@@ -144,6 +148,13 @@ void process() {
     }
     else if(angle == 304){
         digitalWrite(angry, HIGH);
+        delay(t);
+    }
+    else if(angle == 305){
+        digitalWrite(confused, HIGH);
+        delay(t);
+    }else if(angle == 306){
+        digitalWrite(surprise, HIGH);
         delay(t);
     }
     newData = false;
@@ -239,5 +250,4 @@ void salute(){
     myServo.setPWM(base_link, 0, 0);
     myServo.setPWM(elbow, 0, 0);
 }
-
 
