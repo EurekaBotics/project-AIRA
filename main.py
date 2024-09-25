@@ -19,6 +19,7 @@ import configparser
 from VQA import GeminiVisionModel
 from YoloModel import CalcPriceYolo
 from print_color import print
+from my_dataset import data
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
 )
@@ -344,6 +345,14 @@ def angry():
 def neutral():
     print("neutral")
 
+def confused():
+    print('confused')
+    arduino_queue.put("305")
+
+
+def surprised():
+    print('surprised')
+    arduino_queue.put("306")
 
 if not disable_camera:
     Thread = threading.Thread(target=eyes, daemon=True)

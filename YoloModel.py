@@ -1,6 +1,7 @@
 import cv2
 from print_color import print
 from ultralytics import YOLO
+from my_dataset import data
 class CalcPriceYolo:
     def __init__(self) -> None:
         self.model = YOLO("yolov8m.pt")
@@ -27,18 +28,7 @@ class CalcPriceYolo:
         class_names = self.model.names  # Same as the printed list of object categories
 
         # Price dictionary for different items
-        item_prices = {
-            'bottle': 20,
-            'banana': 10,
-            'apple': 30,
-            'sandwich': 60,
-            'hot dog': 100,
-            'pizza': 250,
-            'donut': 30,
-            'orange': 15,
-            'broccoli': 40,
-            'chair': 500
-        }
+        item_prices = data
 
         # Counter dictionary to store the count of each detected item
         item_counts = {item: 0 for item in item_prices}

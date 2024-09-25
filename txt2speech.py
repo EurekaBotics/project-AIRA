@@ -260,7 +260,7 @@ class RealTimeTranscription:
         print("\n\nFinal Transcription:")
         print("\n".join(self.transcription))
 
-
+#devanand
 
 if __name__ == "__main__":
 
