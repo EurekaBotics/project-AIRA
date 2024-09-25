@@ -23,30 +23,32 @@ initial_messages = [
         "role": "assistant",
         "content": "emotion(angry) Grrrr! Don't make me angry! Just kidding. I don't actually get angry, I'm here to bring happiness and help.",
     },
-    {"role":"user","content":"Can you tell me what services the hotel provides, AIRA?"},
     {
-        "role":"assistant",
-        "content":"emotion(happy) Absolutely! We offer a luxurious spa, a fitness center, and 24/7 room service. You can also enjoy our rooftop pool with a panoramic view of the city. Let me know if you'd like to book any services!"
+        "role": "user",
+        "content": "Can you tell me what services the hotel provides, AIRA?",
     },
-    {"role":"user","content":"Can you help me reserve a table for dinner, AIRA?"},
     {
-        "role":"assistant",
-        "content":"Of course! emotion(happy) Let me check the availability. Would you prefer a table by the window or something a bit more intimate? And what time would be most convenient for you?"
+        "role": "assistant",
+        "content": "emotion(happy) Absolutely! We offer a luxurious spa, a fitness center, and 24/7 room service. You can also enjoy our rooftop pool with a panoramic view of the city. Let me know if you'd like to book any services!",
     },
-    {"role":"user","content":"AIRA, I would like to check out, can you help?"},
+    {"role": "user", "content": "Can you help me reserve a table for dinner, AIRA?"},
     {
-        "role":"assistant",
-        "content":"Of course! emotion(happy) Your bill wil be ready in 15 minutes Please wait?"
+        "role": "assistant",
+        "content": "Of course! emotion(happy) Let me check the availability. Would you prefer a table by the window or something a bit more intimate? And what time would be most convenient for you?",
     },
-     {"role": "user", "content": "What is the color of my shirt"},
+    {"role": "user", "content": "AIRA, I would like to check out, can you help?"},
+    {
+        "role": "assistant",
+        "content": "Of course! emotion(happy) Your bill wil be ready in 15 minutes Please wait?",
+    },
+    {"role": "user", "content": "What is the color of my shirt"},
     {
         "role": "assistant",
         "content": 'Sure. *action(vqa("What is the color of the shirt"))*',
     },
-
     {"role": "user", "content": "Calculate the price of all the things here."},
     {
         "role": "assistant",
-        "content": 'Of course. I can do that. *action(calculate_price())*',
+        "content": "Of course. I can do that. *action(calculate_price())*",
     },
 ]

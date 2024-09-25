@@ -2,13 +2,15 @@ import cv2
 from print_color import print
 from ultralytics import YOLO
 from my_dataset import data
+
+
 class CalcPriceYolo:
     def __init__(self) -> None:
         self.model = YOLO("yolov8m.pt")
         self.cap = cv2.VideoCapture(0)
 
     def _capture_frame(self):
-        
+
         ret, frame = self.cap.read()
 
         if ret:
@@ -17,8 +19,8 @@ class CalcPriceYolo:
         else:
             print("Failed to capture frame")
         self.cap.release()
-    
-    def perform_object_detection(self,class_path=None):
+
+    def perform_object_detection(self, class_path=None):
         self._capture_frame()
         image_path = "temp_yolo_frame.jpg"
         image = cv2.imread(image_path)
@@ -49,7 +51,10 @@ class CalcPriceYolo:
         # Print the count of each item and the corresponding total price
         for item, count in item_counts.items():
             if count > 0:
-                print(f"{item.capitalize()} detected: {count}, Price: {count * item_prices[item]} Rs",color='g')
+                print(
+                    f"{item.capitalize()} detected: {count}, Price: {count * item_prices[item]} Rs",
+                    color="g",
+                )
 
         print(f"Total price for all items: {total_price} Rs")
         return total_price
@@ -62,6 +67,7 @@ class CalcPriceYolo:
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     yolo_obj = CalcPriceYolo()
     yolo_obj.perform_object_detection()

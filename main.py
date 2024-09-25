@@ -1,5 +1,6 @@
 import json
 import re
+
 # import openai
 import pyttsx3
 import cv2
@@ -20,6 +21,7 @@ from VQA import GeminiVisionModel
 from YoloModel import CalcPriceYolo
 from print_color import print
 from my_dataset import data
+
 client = Groq(
     api_key=os.environ.get("GROQ_API_KEY"),
 )
@@ -308,13 +310,16 @@ def vqa(msg: str):
     vqa = GeminiVisionModel()
     return vqa.perform_vqa(msg)
 
+
 def detect_obj(obj: str):
     print(f"detect_obj:{obj}")
+
 
 def calculate_price():
     model = CalcPriceYolo()
     val = model.perform_object_detection()
-    return f'Total money calculated from the image is {val}'
+    return f"Total money calculated from the image is {val}"
+
 
 def find(msg: str):
     print(f"find: {msg}")
@@ -342,17 +347,20 @@ def angry():
     print("angry")
     arduino_queue.put("304")
 
+
 def neutral():
     print("neutral")
 
+
 def confused():
-    print('confused')
+    print("confused")
     arduino_queue.put("305")
 
 
 def surprised():
-    print('surprised')
+    print("surprised")
     arduino_queue.put("306")
+
 
 if not disable_camera:
     Thread = threading.Thread(target=eyes, daemon=True)
@@ -408,7 +416,7 @@ if __name__ == "__main__":
                         f"Human: {msg_l}"
                     )
                 response, response_message = chat(msg_l)
-                
+
                 if response_message.function_call:
 
                     available_functions = {"get_current_weather": get_current_weather}
@@ -459,7 +467,7 @@ if __name__ == "__main__":
                 vqa_exists = False
                 price_exists = False
                 if actions:
-                    print('action called')
+                    print("action called")
                     params = B.parse_parameter(actions)
                     vqa_pattern = re.compile(r"vqa\((.*?)\)")
                     for action in actions:
@@ -469,30 +477,31 @@ if __name__ == "__main__":
                             vqa_query = match.group(1).strip("'\"")
                             out = vqa(vqa_query)
                             engine.say(out)
-                            print(out, color='red')
+                            print(out, color="red")
                             engine.runAndWait()
                             break
                     if not vqa_exists:
-                            print('no vqa loop')
-                            price_pattern = re.compile(r"price\((.*?)\)")
-                            for action in actions:
-                                match = price_pattern.search(action)
-                                if match:
-                                    price_exists = True
-                                    price_query = match.group(1).strip("'\"")
-                                    price = calculate_price()
-                                    print(f"Calculated Price: {price}", color='green')
-                                    break
-                            if not price_exists:
-                                print('no price_exist loop')
-                                params = B.parse_parameter(actions)
-                                B(actions, params) # this is a __call__ enabled function that does something that noone knows
-                                print(actions, color='red')
-                                engine.runAndWait()
+                        print("no vqa loop")
+                        price_pattern = re.compile(r"price\((.*?)\)")
+                        for action in actions:
+                            match = price_pattern.search(action)
+                            if match:
+                                price_exists = True
+                                price_query = match.group(1).strip("'\"")
+                                price = calculate_price()
+                                print(f"Calculated Price: {price}", color="green")
+                                break
+                        if not price_exists:
+                            print("no price_exist loop")
+                            params = B.parse_parameter(actions)
+                            B(
+                                actions, params
+                            )  # this is a __call__ enabled function that does something that noone knows
+                            print(actions, color="red")
+                            engine.runAndWait()
 
-
-                                # cleaned_response = B.clean(response)
-                                # engine.say(cleaned_response)
+                            # cleaned_response = B.clean(response)
+                            # engine.say(cleaned_response)
 
                 if emotions:
                     print(emotions)

@@ -47,10 +47,9 @@ initial_messages = [
         "role": "assistant",
         "content": '*action(vqa("What is the color of the shirt"))*',
     },
-
     {"role": "user", "content": "Calculate the price of all the things here."},
     {
         "role": "assistant",
-        "content": '*action(calculate_price())*',
+        "content": "*action(calculate_price())*",
     },
 ]
